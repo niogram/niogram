@@ -1,0 +1,32 @@
+Licensing Conditions
+====================
+
+All files referring to these Licensing Conditions are copyrighted by
+Nikolay Ognyanov, 2018. All rights are reserved.
+
+All files referring to these Licensing Conditions are triple-licensed
+under either :
+
+(a) the terms of the GNU Lesser General Public License version 2.1
+    as published by the Free Software Foundation, or (at your option)
+    any later version.
+
+or (per the licensee's choosing)
+
+(b) the terms of the Eclipse Public License v1.0 as published by
+    the Eclipse Foundation.
+
+or (per the licensee's choosing)
+
+(c) the terms of the BSD 3-clause license.
+
+
+The text of the 3 licenses is incuded in the root folder of the project.
+
+
+The dependencies of this project are licensed as follows:
+
+1/ JGraphT is double-licensed under (a) or (b) above per the licensee's choosing.
+2/ The ANTLR 4 runtime is licensed under (c) above with Copyright (c) 2012-2017
+   by The ANTLR Project. All rights reserved.
+
