@@ -1,0 +1,6 @@
+net.ognyanov.niogram.analysis
+net.ognyanov.niogram.ast
+net.ognyanov.niogram.parser
+net.ognyanov.niogram.parser.antlr4
+net.ognyanov.niogram.tool
+net.ognyanov.niogram.util
