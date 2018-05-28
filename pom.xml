@@ -50,6 +50,7 @@
     <modules>
         <module>niogram-core</module>
         <module>niogram-tool</module>
+         <module>niogram-complete</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
