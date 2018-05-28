@@ -142,6 +142,6 @@ traces.
 
 **General Status : Under Development**
 
-API documentation is available [here](https://niogram.github.io/index.html). An User Manual is
+API documentation is available [here](https://niogram.github.io/niogram/). An User Manual is
 available in the doc folder of the project.
 
