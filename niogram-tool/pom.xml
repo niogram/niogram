@@ -106,7 +106,7 @@
                             </includes>
                             <arguments>
                                 <argument>-package</argument>
-                                <argument>net.ognyanov.niogram.parser</argument>
+                                <argument>net.ognyanov.niogram.parser.antlr4</argument>
                             </arguments>
                             <outputDirectory>${basedir}/src/main/java/net/ognyanov/niogram/parser/antlr4</outputDirectory>
                             <visitor>true</visitor>
@@ -146,7 +146,7 @@
     </profiles>
     <dependencies>
         <dependency>
-            <groupId>net.ognyanov</groupId>
+            <groupId>net.ognyanov.niogram</groupId>
             <artifactId>niogram-core</artifactId>
             <version>${project.version}</version>
         </dependency>

@@ -6,7 +6,7 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>NioGram</name>
-    <description>A Java library and command line tool for LL(k) analysis of grammars.</description>
+    <description>A Java toolkit for syntactic analysis of grammars.</description>
     <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>

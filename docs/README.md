@@ -18,10 +18,10 @@ the process of hand-coded parser implementation.
 At present the grammar specification language directly
 supported by NioGram is the language of the
 [**ANTLR 4**](http://www.antlr.org/) parser generator.
-The grammar model and analysis methods of NioGram however
-are not dependent the grammar specification language.
-If an appropriate parser to the NioGram AST model is
-implemented then NioGram will be able to process
+The grammar model and the analysis methods of NioGram
+however are not dependent on the grammar specification
+language. If an appropriate parser to the NioGram AST
+model is implemented then NioGram will be able to process
 grammars specified in other languages such as e.g. JavaCC,
 YACC, Bison etc.
 

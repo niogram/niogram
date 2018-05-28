@@ -24,6 +24,7 @@
                 </executions>
                 <configuration>
                     <finalName>${project.artifactId}-${project.version}</finalName>
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
                     <transformers>
                         <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                             <mainClass>net.ognyanov.niogram.tool.Tool</mainClass>
@@ -81,12 +82,12 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>net.ognyanov</groupId>
+            <groupId>net.ognyanov.niogram</groupId>
             <artifactId>niogram-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.ognyanov</groupId>
+            <groupId>net.ognyanov.niogram</groupId>
             <artifactId>niogram-tool</artifactId>
             <version>${project.version}</version>
         </dependency>

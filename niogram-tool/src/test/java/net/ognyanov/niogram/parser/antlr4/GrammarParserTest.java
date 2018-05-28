@@ -14,13 +14,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import net.ognyanov.niogram.analysis.FirstFollowCalculator;
-import net.ognyanov.niogram.analysis.FirstTrace;
-import net.ognyanov.niogram.analysis.FlagsCalculator;
 import net.ognyanov.niogram.ast.Grammar;
-import net.ognyanov.niogram.ast.NonterminalRule;
-import net.ognyanov.niogram.ast.TerminalRule;
-import net.ognyanov.niogram.parser.antlr4.Antlr4AstParser;
 import net.ognyanov.niogram.util.ClassPathLocator;
 
 public class GrammarParserTest
@@ -30,8 +24,7 @@ public class GrammarParserTest
     {
         ClassPathLocator locator = new ClassPathLocator();
         List<String> testGrammars = locator
-            //.findResources("/grammars/.*\\.g4");
-            .findResources("/grammars/traces.g4");
+            .findResources("/grammars/.*\\.g4");
         for (String grammarFile : testGrammars) {
             Antlr4AstParser parser = null;
             try {
@@ -42,6 +35,7 @@ public class GrammarParserTest
                 assertTrue(false);
             }
             Grammar grammar = parser.grammar();
+            /*
             grammar.setK(1);
             FlagsCalculator flagsCalculator = new FlagsCalculator();
             flagsCalculator.calculate(grammar);
@@ -63,6 +57,7 @@ public class GrammarParserTest
             }
             calculator.calculate(grammar);
             //FirstKTrace trace = new FirstKTrace(rule, terminalType, position)
+             */
             assertFalse(parser.hasErrors());
         }
     }

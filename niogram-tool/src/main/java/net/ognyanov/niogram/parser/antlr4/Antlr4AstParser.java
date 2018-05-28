@@ -233,7 +233,7 @@ public class Antlr4AstParser
         null;
     private boolean                                debugMe                   =
         false;
-    private boolean                                isNioGram                  =
+    private boolean                                isNioGram                 =
         false;
     private Set<String>                            visitedRules              =
         new HashSet<String>();
