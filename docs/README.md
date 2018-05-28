@@ -1,6 +1,14 @@
 ﻿# **NioGram**
 ## Grammar Analyzer
 
+---
+
+**Project Sites**
+* [Home](https://niogram.github.io/niogram/)
+* [API](https://niogram.github.io/niogram/apidocs)
+* [User Manual](https://niogram.github.io/niogram/NioGram_User_Manual.pdf)
+* [GitHub Repository](https://github.com/niogram/niogram)
+---
 **NioGram** is a tool for **LL(k)** syntax analysis of 
 context free grammars. Such analysis can be benefitial
 in the process of language and grammar design and for
@@ -9,12 +17,14 @@ the process of hand-coded parser implementation.
 At present the grammar specification language directly
 supported by NioGram is the language of the 
 [**ANTLR 4**](http://www.antlr.org/) parser generator.
-The grammar model and analysis methods of NioGram though
-are not dependent on any specific grammar specification
-language. If an appropriate parser to the NioGram AST
-model is implemented then NioGram will be able to process
+The grammar model and analysis methods of NioGram however
+are not dependent on the grammar specification language.
+If an appropriate parser to the NioGram AST model is 
+implemented then NioGram will be able to process
 grammars specified in other languages such as e.g. JavaCC,
 YACC, Bison etc.
+
+---
 
 ### Use Cases
 * **ANTLR 4 IDEs**  
@@ -32,6 +42,7 @@ of analysis data needed for the implementation of
 hand-coded parsers and generates related programming
 artefacts.
 
+---
 ### ANTLR 4 Grammar Development Support
 ANTLR 4 implements an extremely powerful parsing strategy.
 It can deal with almost any grammar which lacks indirect
@@ -67,6 +78,7 @@ author develops not just a grammar but a language then the
 **LL(k)** properties of the grammar are important for the ease
 of comprehension of the language.
 
+---
 ### Hand-Coded Parser Development Support
 Despite the existence of excellent parser generator tools,
 hand-coded parsers are still being developed even for
@@ -131,18 +143,4 @@ NioGram strives to facilitate the by means of grammar
 analysis. For example - by computing terminal occurrence
 traces.
 
-### Development Roadmap and Status
-1. AST model for the ANTLR 4 grammar language. **Done**
-2. Parsing of ANTLR grammars to AST. **Done**
-3. Grammar analysis **Done**
-4. General code and API cleanup. **In Progress**
-5. Documentation. **Ongoing** 
-6. Initial acceptance testing. **TBD**
-7. First release to public. **TBD**
-
-**General Status : Under Development**
-
-The API documentation is available [here](https://niogram.github.io/niogram/apidocs).
-The User Manual is available
-[here](https://niogram.github.io/niogram/NioGram_User_Manual.pdf).
-The GitHub repository is [here](https://github.com/niogram/niogram).
+---
