@@ -1,5 +1,5 @@
 ﻿# **NioGram**
-## Grammar Analyzer
+## Grammar Analysis Toolkit
 
 **Project Sites**
 
