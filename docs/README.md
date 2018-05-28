@@ -145,4 +145,4 @@ traces.
 The API documentation is available [here](https://niogram.github.io/niogram/apidocs).
 The User Manual is available
 [here](https://niogram.github.io/niogram/NioGram_User_Manual.pdf).
-
+The GitHub repository is [here](https://github.com/niogram/niogram).
