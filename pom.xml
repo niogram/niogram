@@ -50,7 +50,7 @@
     <modules>
         <module>niogram-core</module>
         <module>niogram-tool</module>
-         <module>niogram-complete</module>
+        <module>niogram-complete</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -70,4 +70,7 @@
         <antlr4test-maven-plugin.version>1.10</antlr4test-maven-plugin.version>
         <maven-eclipse-plugin.version>2.10</maven-eclipse-plugin.version>
     </properties>
- </project>
+    <reporting>
+        <outputDirectory>docs</outputDirectory>
+    </reporting>
+</project>
