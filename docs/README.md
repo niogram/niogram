@@ -113,15 +113,15 @@ typical situation will be :
 If the situation is worse than this then the language
 is either old, influential and bloated or poorly designed
 (or both). As already noted, apart from the subject of
-anguage implementation LL(k) properties of the grammar
-are very important from the standpoint of ease of comprehension
-of the language by its "speakers". Finding out which rules
-belong to which of the above categories is a crucially
-important task in parser development. Doing this by hand
-though is far from trivial. Even talented and experienced
-developers can easily make mistakes. NioGram on the other
-hand fully authomates the task and thus makes it cheap and
-error free.
+language implementation LL(k) properties of the grammar
+are important from the standpoint of ease of comprehension
+of the language by its "speakers". Finding out which
+rules belong to which of the above categories is a
+crucially important task in parser development. Doing
+this by hand though is far from trivial. Even talented
+and experienced developers can easily make mistakes.
+NioGram on the other hand fully authomates the task and
+thus makes it cheap and error free.
 
 Parsing of the **LL(k)** rules can be easily implemented
 by hand in a recursive descent parser **if** the
