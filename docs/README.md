@@ -82,7 +82,9 @@ of comprehension of the language.
 
 ---
 
-### Hand-Coded Parser Development SupportDespite the existence of excellent parser generator tools,
+### Hand-Coded Parser Development Support
+
+Despite the existence of excellent parser generator tools,
 hand-coded parsers are still being developed even for
 A-list languages such as Java. More often than not though
 the analysis data needed for hand coding is
@@ -129,9 +131,9 @@ higher level nonterminals tend to be quite sizeable.
 Collecting the information by hand is tedious and
 error prone. It is questionable whether the task
 is even feasible for "serious" language grammars. NioGram
-fully automates the process. Thus feasibility is always
-guaranteed and a lot of time for development and even
-more time for testing and debugging is saved.
+fully automates the process. Thus the feasibility is
+always guaranteed and a lot of time for development and
+even more time for testing and debugging is saved.
 
 The non-**LL(k)** rules (if any)  have to be resolved by
 one or more of the following:
