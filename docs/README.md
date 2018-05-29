@@ -141,7 +141,8 @@ one or more of the following:
 1. Context dependency
 2. Temporary switch to a different parsing stragegy
 3. Temporary switch to a different grammar
-4. Ad hoc tricks
+4. Backtracking
+5. Ad hoc tricks
 
 NioGram strives to facilitate these solutions by means of
 grammar analysis. For example - by computing terminal
