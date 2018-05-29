@@ -22,6 +22,8 @@ public interface ErrorDispatcher
      * - a syntax error flag</li>
      * <li><strong>FailedTokenImports</strong>
      *  - signals failure to open an imported tokens file</li>
+     * <li><strong>InvalidOptionValue</strong>
+     *  - signals an attempt to assign invalid value to an option.</li>
      * <li><strong>FailedGrammarImports</strong>
      * - signals failure to open an imported grammar file</li>
      * <li><strong>DuplicateTerminals</strong>
@@ -52,7 +54,8 @@ public interface ErrorDispatcher
      */
     public enum ErrorType
     {
-        SyntaxErrors, FailedTokenImports, FailedGrammarImports,
+        SyntaxErrors, FailedTokenImports, IvalidOptionValue,
+        FailedGrammarImports,
         DuplicateTerminals, UnknownTerminals, InvalidTerminalNames,
         InvalidTerminalTypes, DuplicateNonterminals, UnknownNonterminals,
         NonterminalLiterals, DotExpressions, NotSets, LazyEBNF

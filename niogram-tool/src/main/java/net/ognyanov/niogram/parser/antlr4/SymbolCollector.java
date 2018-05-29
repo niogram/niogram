@@ -37,10 +37,11 @@ class SymbolCollector
     extends ANTLRv4ParserBaseVisitor<Object>
 {
     private static final String TOKEN_VOCABULARY  = "tokenVocab";
-    private Antlr4AstParser       parser            = null;
+    private static final String OPTION_K          = "k";
+    private Antlr4AstParser     parser            = null;
     private ANTLRv4Parser       parseTreeParser   = null;
     private Vocabulary          vocabulary        = null;
-    private boolean             isNioGram          = false;
+    private boolean             isNioGram         = false;
 
     boolean                     firstPass         = false;
     private boolean             inNonterminalRule = false;
@@ -106,6 +107,27 @@ class SymbolCollector
                     vocabularyPos = ctx.start.getCharPositionInLine();
                     if (vocabularyFile != null) {
                         loadVocabulary(vocabularyFile);
+                    }
+                }
+                else if (OPTION_K.equals(identifier)) {
+                    int k = -1;
+                    try {
+                        k = Integer.parseInt(optionValue);
+                    }
+                    catch (NumberFormatException e) {
+                    }
+                    if (k <= 0) {
+                        int line = ctx.start.getLine();
+                        int position = ctx.start.getCharPositionInLine();
+                        String message =
+                            "Invalid value for option k : " + optionValue;
+                        parser.notifyErrorListeners(
+                            ErrorType.IvalidOptionValue, line,
+                            position, message);
+
+                    }
+                    else {
+                        parser.setOptionK(k);
                     }
                 }
                 parser.getOptions()

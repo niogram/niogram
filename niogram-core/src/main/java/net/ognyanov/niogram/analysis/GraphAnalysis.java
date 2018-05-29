@@ -83,7 +83,7 @@ public class GraphAnalysis
      * @param graph the graph to be processed
      * @return dot format representation of the graph
      */
-    public static String toDot(Graph<NonterminalRule, DefaultEdge> graph)
+    public static String toDotString(Graph<NonterminalRule, DefaultEdge> graph)
     {
         DotEmitter dotEmitter = new DotEmitter();
         return dotEmitter.toDot(graph);

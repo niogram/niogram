@@ -158,6 +158,8 @@ public class Antlr4AstParser
         null;
     private List<Pair<String, String>>             options                   =
         new ArrayList<Pair<String, String>>();
+    private int                                    optionK                   =
+        -1;
     private List<String>                           delegateGrammars          =
         new ArrayList<String>();
 
@@ -469,6 +471,10 @@ public class Antlr4AstParser
         grammar.setSymbolicName(GRAMMAR_NAME);
         grammar.setDisplayName(getGrammarName());
         grammar.setSourceContext(parseTree);
+        if (getOptionK() > 0) {
+            grammar.setK(optionK);
+            grammar.setKL(optionK);
+        }
     }
 
     private void setCurrentType(int type)
@@ -700,6 +706,29 @@ public class Antlr4AstParser
     public List<Pair<String, String>> getOptions()
     {
         return options;
+    }
+
+    /**
+     * Retrieves the value of the option k as
+     * specified in the grammar text or -1 if
+     * no option k was specified.
+     * 
+     * @return the value of the option or -1 if not specified
+     */
+    public int getOptionK()
+    {
+        return optionK;
+    }
+
+    /**
+     * Sets the value of the option k to be
+     * set as both K and KL into the created grammar.
+     * 
+     * @param optionK the value of k
+     */
+    public void setOptionK(int optionK)
+    {
+        this.optionK = optionK;
     }
 
     /**

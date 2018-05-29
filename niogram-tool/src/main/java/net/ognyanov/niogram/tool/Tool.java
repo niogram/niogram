@@ -44,20 +44,20 @@ public class Tool
                 + "        -pb    print the grammar basic information\n"
                 + "        -psx   print the grammar AST in XML\n"
                 + "        -psd   print the grammar AST in DOT\n"
-                + "        -psr   print the grammar railroad diagram in DOT\n"
+                + "        -psr   print the grammar railroad diagrams in DOT\n"
                 + "        -pfd   print the grammar full    dependency graph in DOT\n"
                 + "        -prd   print the grammar reduced dependency graph in DOT\n"
                 + "        -ppx   print the grammar parse tree in XML\n"
                 + "        -ppd   print the grammar parse tree in DOT\n"
-                + "        -pff   print the first/follow sets\n"
+                + "        -pff   print the firstX/followX sets\n"
                 + "        -pffc  print the LL(k) conflict information\n"
                 + "        -ff    calculate the first   / follow   sets\n"
                 + "        -ffk   calculate the firstK  / followK  sets\n"
                 + "        -ffkl  calculate the firstKL / followKL sets\n"
                 + "        -ffall calculate all firstX  / followX  sets\n"
                 //+ "      -ffc   compare the calculated first/follow sets\n"
-                + "        -k=n   set the k for the LL(k) analysis";
-    private static boolean      doNioGram          = false;
+                + "        -k=n   set the k parameter for the LL(k) analysis";
+    private static boolean      doNioGram         = false;
     private static boolean      doQuiet           = false;
     private static boolean      printBasic        = false;
     private static boolean      storeGrammar      = false;
@@ -75,7 +75,7 @@ public class Tool
     private static boolean      doFFK             = false;
     private static boolean      doFFALL           = false;
     private static boolean      doFFCMP           = false;
-    private static int          llK               = 1;
+    private static int          llK               = -1;
 
     private static String       fileName          = null;
     private static boolean      argOK             = true;
@@ -113,8 +113,16 @@ public class Tool
             System.out.println("Error: Parsing of the grammar failed.");
             System.exit(255);
         }
-        grammar.setK(llK);
-        grammar.setKL(llK);
+        if (llK > 0) {
+            grammar.setK(llK);
+            grammar.setKL(llK);
+        }
+        else {
+            if (grammar.getK() <= 0) {
+                grammar.setK(1);
+                grammar.setKL(1);
+            }
+        }
         if (printDiagnostic) {
             System.out.println("Parsing duration                : "
                     + (end - start)
@@ -153,15 +161,14 @@ public class Tool
         }
         if (printDgDOT) {
             System.out.println(GraphAnalysis
-                .toDot(GraphAnalysis.toGraph(grammar)));
+                .toDotString(GraphAnalysis.toGraph(grammar)));
         }
         if (printLrDgDOT) {
             System.out.println(GraphAnalysis
-                .toDot(GraphAnalysis.toLRGraph(grammar)));
+                .toDotString(GraphAnalysis.toLRGraph(grammar)));
         }
         if (doFF) {
             start = System.currentTimeMillis();
-            grammar.setK(llK);
             new FirstFollowCalculator().calculate(grammar);
             end = System.currentTimeMillis();
             if (printBasic) {
