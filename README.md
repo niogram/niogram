@@ -6,7 +6,7 @@
 * [Home](https://niogram.github.io/niogram/)
 * [API](https://niogram.github.io/niogram/apidocs)
 * [User Manual](https://niogram.github.io/niogram/NioGram_User_Manual.pdf)
-* [GitHub Repository](https://github.com/niogram/niogram)
+* [Git Repository](https://github.com/niogram/niogram)
 
 ---
 
