@@ -38,7 +38,7 @@ class SymbolCollector
 {
     private static final String TOKEN_VOCABULARY  = "tokenVocab";
     private static final String OPTION_K          = "k";
-    private Antlr4AstParser     parser            = null;
+    private Antlr4ToAstParser     parser            = null;
     private ANTLRv4Parser       parseTreeParser   = null;
     private Vocabulary          vocabulary        = null;
     private boolean             isNioGram         = false;
@@ -51,13 +51,13 @@ class SymbolCollector
     private int                 vocabularyLine    = 0;
     private int                 vocabularyPos     = 0;
 
-    public SymbolCollector(Antlr4AstParser parser,
+    public SymbolCollector(Antlr4ToAstParser parser,
                            ANTLRv4Parser parseTreeParser)
     {
         this.parser = parser;
         this.parseTreeParser = parseTreeParser;
         vocabulary = parseTreeParser.getVocabulary();
-        isNioGram = parser.getMode() == Antlr4AstParser.Mode.NioGram;
+        isNioGram = parser.getMode() == Antlr4ToAstParser.Mode.NioGram;
     }
 
     @Override
@@ -68,10 +68,10 @@ class SymbolCollector
         if (ctx.grammarType() != null) {
             String type = ctx.grammarType().getText();
             if ("lexergrammar".equals(type)) {
-                parser.setGrammarType(Antlr4AstParser.GrammarType.LEXER);
+                parser.setGrammarType(Antlr4ToAstParser.GrammarType.LEXER);
             }
             else if ("parsergrammar".equals(type)) {
-                parser.setGrammarType(Antlr4AstParser.GrammarType.PARSER);
+                parser.setGrammarType(Antlr4ToAstParser.GrammarType.PARSER);
             }
         }
         String name = ctx.identifier().getText();
@@ -345,7 +345,7 @@ class SymbolCollector
                                 position, message);
                         }
                         else {
-                            if (!(Antlr4AstParser.GrammarType.COMBINED == parser
+                            if (!(Antlr4ToAstParser.GrammarType.COMBINED == parser
                                 .getGrammarType())) {
                                 String message =
                                     "literals are not allowed in nonterminal rules";

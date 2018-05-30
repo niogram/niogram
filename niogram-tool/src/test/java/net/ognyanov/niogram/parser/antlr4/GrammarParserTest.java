@@ -26,9 +26,9 @@ public class GrammarParserTest
         List<String> testGrammars = locator
             .findResources("/grammars/.*\\.g4");
         for (String grammarFile : testGrammars) {
-            Antlr4AstParser parser = null;
+            Antlr4ToAstParser parser = null;
             try {
-                parser = new Antlr4AstParser(grammarFile, locator);
+                parser = new Antlr4ToAstParser(grammarFile, locator);
             }
             catch (IOException e) {
                 // should never happen

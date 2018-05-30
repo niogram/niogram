@@ -101,6 +101,13 @@ public interface Multiplex
      */
     public int getMinFfKL();
 
+    /**
+     * Retrieves the nullability status of the object.
+     * 
+     * @return true if the object is nullable; otherwise false
+     */
+    public boolean isNullable();
+
     public static class Conflict
         implements Serializable
     {
@@ -128,7 +135,7 @@ public interface Multiplex
             return target;
         }
 
-        public BiasedBitSet getConflict()
+        public BiasedBitSet getConflictSet()
         {
             return conflict;
         }
@@ -216,7 +223,7 @@ public interface Multiplex
             return target;
         }
 
-        public IntLLStringSet getConflict()
+        public IntLLStringSet getConflictSet()
         {
             return conflict;
         }
@@ -304,7 +311,7 @@ public interface Multiplex
             return target;
         }
 
-        public BitSetLLString getConflict()
+        public BitSetLLString getConflictSet()
         {
             return conflict;
         }

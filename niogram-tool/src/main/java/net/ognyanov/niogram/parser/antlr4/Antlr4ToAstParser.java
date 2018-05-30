@@ -118,7 +118,7 @@ import net.ognyanov.niogram.util.ResourceLocator;
  * 
  * @author Nikolay Ognyanov
  */
-public class Antlr4AstParser
+public class Antlr4ToAstParser
     implements AstParser
 {
     /**
@@ -209,11 +209,11 @@ public class Antlr4AstParser
     private Map<ErrorListener, RelayErrorListener> relayErrorListeners       =
         new HashMap<ErrorListener, RelayErrorListener>();
 
-    private Antlr4AstParser                        parent                    =
+    private Antlr4ToAstParser                        parent                    =
         null;
 
-    private List<Antlr4AstParser>                  children                  =
-        new ArrayList<Antlr4AstParser>();
+    private List<Antlr4ToAstParser>                  children                  =
+        new ArrayList<Antlr4ToAstParser>();
 
     private boolean                                inSyntax                  =
         false;
@@ -256,7 +256,7 @@ public class Antlr4AstParser
      * @param resourceLocator the resource locator to be used by the parser
      * @throws IOException if the parser fails to access the grammar file
      */
-    public Antlr4AstParser(String fileName, ResourceLocator resourceLocator)
+    public Antlr4ToAstParser(String fileName, ResourceLocator resourceLocator)
         throws IOException
     {
         if (resourceLocator != null) {
@@ -282,7 +282,7 @@ public class Antlr4AstParser
      * @param fileName the name of the grammar file
      * @throws IOException if the parser fails to access the grammar file
      */
-    public Antlr4AstParser(String fileName)
+    public Antlr4ToAstParser(String fileName)
         throws IOException
     {
         this(fileName, null);
@@ -295,7 +295,7 @@ public class Antlr4AstParser
      * @param resourceLocator the resource locator to be used by the parser
      * @throws IOException if the parser fails to access the stream
      */
-    public Antlr4AstParser(InputStream inputStream,
+    public Antlr4ToAstParser(InputStream inputStream,
                            ResourceLocator resourceLocator)
         throws IOException
     {
@@ -320,7 +320,7 @@ public class Antlr4AstParser
      * @param inputStream an input stream for the grammar text
      * @throws IOException if the parser fails to access the grammar file
      */
-    public Antlr4AstParser(InputStream inputStream)
+    public Antlr4ToAstParser(InputStream inputStream)
         throws IOException
     {
         this(inputStream, null);
@@ -445,7 +445,7 @@ public class Antlr4AstParser
         inSyntax = false;
 
         SymbolCollector symbolCollector =
-            new SymbolCollector(Antlr4AstParser.this, parseTreeParser);
+            new SymbolCollector(Antlr4ToAstParser.this, parseTreeParser);
         symbolCollector.visit(parseTree);
 
         createGrammar();
@@ -479,7 +479,7 @@ public class Antlr4AstParser
 
     private void setCurrentType(int type)
     {
-        Antlr4AstParser.this.currentType = type;
+        Antlr4ToAstParser.this.currentType = type;
     }
 
     private int nextType()
@@ -910,7 +910,7 @@ public class Antlr4AstParser
         parseTreeParser.addErrorListener(relayEL);
         parseTreeLexer.addErrorListener(relayEL);
         if (!children.isEmpty()) {
-            for (Antlr4AstParser child : children) {
+            for (Antlr4ToAstParser child : children) {
                 child.addErrorListener(errorListener);
             }
         }
@@ -934,7 +934,7 @@ public class Antlr4AstParser
             relayErrorListeners.remove(errorListener);
         }
         if (!children.isEmpty()) {
-            for (Antlr4AstParser child : children) {
+            for (Antlr4ToAstParser child : children) {
                 child.removeErrorListener(errorListener);
             }
         }
@@ -954,7 +954,7 @@ public class Antlr4AstParser
         parseTreeParser.addErrorListener(silentRelayListener);
         relayErrorListeners.put(silentListener, silentRelayListener);
         if (!children.isEmpty()) {
-            for (Antlr4AstParser child : children) {
+            for (Antlr4ToAstParser child : children) {
                 child.removeErrorListeners();
             }
         }

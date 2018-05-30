@@ -1,4 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
+<project xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.ognyanov.niogram</groupId>
@@ -7,6 +7,7 @@
     <packaging>pom</packaging>
     <name>NioGram</name>
     <description>A Java toolkit for syntactic analysis of grammars.</description>
+    <url>https://niogram.github.io/niogram/</url>
     <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
@@ -43,7 +44,7 @@
             <name>Nikolay Ognyanov</name>
             <url>https://linkedin.com/in/nikolay-ognyanov/</url>
             <roles>
-                <role>Project owner</role>
+                <role>Project Owner</role>
             </roles>
         </developer>
     </developers>
@@ -59,7 +60,7 @@
         <source.jvm>1.8</source.jvm>
         <target.jvm>1.8</target.jvm>
         <antlr.version>4.7.1</antlr.version>
-        <jgrapht.version>1.1.0</jgrapht.version>
+        <jgrapht.version>1.2.0</jgrapht.version>
         <junit.version>4.12</junit.version>
         <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
         <maven-jar-plugin.version>3.0.0</maven-jar-plugin.version>
@@ -67,6 +68,7 @@
         <maven-shade-plugin.version>3.1.1</maven-shade-plugin.version>
         <maven-javadoc-plugin.version>3.0.0</maven-javadoc-plugin.version>
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
+        <checksum-maven-plugin.version>1.6</checksum-maven-plugin.version>
         <maven-surefire-plugin.version>2.21.0</maven-surefire-plugin.version>
         <antlr4test-maven-plugin.version>1.10</antlr4test-maven-plugin.version>
         <maven-eclipse-plugin.version>2.10</maven-eclipse-plugin.version>

@@ -17,6 +17,9 @@ import org.jgrapht.graph.DefaultEdge;
 import net.ognyanov.niogram.analysis.FirstFollowCalculator;
 import net.ognyanov.niogram.analysis.FirstKFollowKCalculator;
 import net.ognyanov.niogram.analysis.FirstKLFollowKLCalculator;
+import net.ognyanov.niogram.analysis.FirstKLTrace;
+import net.ognyanov.niogram.analysis.FirstKTrace;
+import net.ognyanov.niogram.analysis.FirstTrace;
 import net.ognyanov.niogram.analysis.FlagsCalculator;
 import net.ognyanov.niogram.analysis.GraphAnalysis;
 import net.ognyanov.niogram.ast.Block;
@@ -24,9 +27,16 @@ import net.ognyanov.niogram.ast.BuiltInTypes;
 import net.ognyanov.niogram.ast.Grammar;
 import net.ognyanov.niogram.ast.GrammarNode;
 import net.ognyanov.niogram.ast.Multiplex;
+import net.ognyanov.niogram.ast.Multiplex.Conflict;
+import net.ognyanov.niogram.ast.Multiplex.ConflictK;
+import net.ognyanov.niogram.ast.Multiplex.ConflictKL;
 import net.ognyanov.niogram.ast.NonterminalRule;
 import net.ognyanov.niogram.parser.ErrorDispatcher.ErrorType;
-import net.ognyanov.niogram.parser.antlr4.Antlr4AstParser;
+import net.ognyanov.niogram.parser.antlr4.Antlr4ToAstParser;
+import net.ognyanov.niogram.util.BiasedBitSet;
+import net.ognyanov.niogram.util.BitSetLLString;
+import net.ognyanov.niogram.util.IntLLString;
+import net.ognyanov.niogram.util.IntLLStringSet;
 
 /**
  * The main class of the NioGram command line tool.
@@ -51,6 +61,7 @@ public class Tool
                 + "        -ppd   print the grammar parse tree in DOT\n"
                 + "        -pff   print the firstX/followX sets\n"
                 + "        -pffc  print the LL(k) conflict information\n"
+                + "        -pct   print the conflict traces in DOT\n"
                 + "        -ff    calculate the first   / follow   sets\n"
                 + "        -ffk   calculate the firstK  / followK  sets\n"
                 + "        -ffkl  calculate the firstKL / followKL sets\n"
@@ -70,6 +81,7 @@ public class Tool
     private static boolean      printLrDgDOT      = false;
     private static boolean      printSets         = false;
     private static boolean      printConflicts    = false;
+    private static boolean      printTraces;
     private static boolean      doFF              = false;
     private static boolean      doFFKL            = false;
     private static boolean      doFFK             = false;
@@ -91,16 +103,16 @@ public class Tool
             System.exit(255);
         }
 
-        Antlr4AstParser grammarParser = null;
+        Antlr4ToAstParser grammarParser = null;
         try {
-            grammarParser = new Antlr4AstParser(fileName);
+            grammarParser = new Antlr4ToAstParser(fileName);
         }
         catch (IOException e) {
             System.out.println("Error: failed to open file " + fileName);
             System.exit(255);
         }
         if (doNioGram) {
-            grammarParser.setMode(Antlr4AstParser.Mode.NioGram);
+            grammarParser.setMode(Antlr4ToAstParser.Mode.NioGram);
         }
         if (doQuiet) {
             grammarParser.removeErrorListeners();
@@ -215,6 +227,9 @@ public class Tool
         if (printConflicts) {
             printConflicts(grammar);
         }
+        if (printTraces) {
+            printTraces(grammar);
+        }
         if (doFFCMP) {
             new FirstFollowComparator().compare(grammar);
         }
@@ -270,6 +285,9 @@ public class Tool
             }
             else if ("-pffc".equals(arg)) {
                 printConflicts = true;
+            }
+            else if ("-pct".equals(arg)) {
+                printTraces = true;
             }
             else if ("-ff".equals(arg)) {
                 doFF = true;
@@ -346,7 +364,7 @@ public class Tool
         */
     }
 
-    private static void printDiagnostic(Antlr4AstParser astParser)
+    private static void printDiagnostic(Antlr4ToAstParser astParser)
     {
         int width = 22;
 
@@ -645,8 +663,189 @@ public class Tool
         }
     }
 
+    private static void printTraces(Grammar grammar)
+    {
+        System.out.println("//=============");
+        System.out.println("//   Traces    ");
+        System.out.println("//=============");
+        System.out.println();
+        for (NonterminalRule rule : grammar.getNonterminalRules()) {
+            printMultiplexTraces(grammar, rule);
+        }
+        for (Block block : grammar.getBlocks()) {
+            printMultiplexTraces(grammar, block);
+        }
+    }
+
+    private static void printMultiplexTraces(Grammar grammar,
+                                             Multiplex multiplex)
+    {
+        BiasedBitSet conflict = null;
+        IntLLStringSet conflictK = null;
+        BitSetLLString conflictKL = null;
+        BiasedBitSet conflictFF = null;
+        IntLLStringSet conflictKFF = null;
+        BitSetLLString conflictKLFF = null;
+        if (grammar.hasFF()) {
+            conflict = new BiasedBitSet(BuiltInTypes.MIN_TYPE, grammar);
+            for (Conflict c : multiplex.getConflicts()) {
+                conflict.or(c.getConflictSet());
+            }
+            conflictFF = multiplex.getFfConflict();
+        }
+        if (grammar.hasFFK()) {
+            conflictK = new IntLLStringSet(grammar.getK(), grammar);
+            for (ConflictK cK : multiplex.getConflictsK()) {
+                conflictK.addAll(cK.getConflictSet());
+            }
+            conflictKFF = multiplex.getFfConflictK();
+        }
+        if (grammar.hasFFKL()) {
+            conflictKL = new BitSetLLString(grammar.getKL(), grammar);
+            for (ConflictKL cKL : multiplex.getConflictsKL()) {
+                conflictKL.addAll(cKL.getConflictSet());
+            }
+            conflictKLFF = multiplex.getFfConflictKL();
+        }
+        if (conflict != null) {
+            int current = conflict.getStart();
+            while ((current = conflict.nextSetBit(current)) != conflict
+                .getNone()) {
+                FirstTrace trace = null;
+                if (multiplex instanceof NonterminalRule) {
+                    trace =
+                        new FirstTrace((NonterminalRule) multiplex, current);
+                }
+                else if (multiplex instanceof Block) {
+                    trace =
+                        new FirstTrace((Block) multiplex, current);
+                }
+                System.out.println(
+                    "// First/First on " + grammar.getTypeName(current));
+                System.out.println(trace.toDotString());
+            }
+        }
+        if (conflictFF != null && multiplex.isNullable()) {
+            int current = conflictFF.getStart();
+            while ((current = conflictFF.nextSetBit(current)) != conflictFF
+                .getNone()) {
+                FirstTrace trace = null;
+                if (multiplex instanceof NonterminalRule) {
+                    trace =
+                        new FirstTrace((NonterminalRule) multiplex, current);
+                }
+                else if (multiplex instanceof Block) {
+                    trace =
+                        new FirstTrace((Block) multiplex, current);
+                }
+                System.out.println(
+                    "// First/Follow on " + grammar.getTypeName(current));
+                System.out.println(trace.toDotString());
+            }
+        }
+        if (conflictK != null) {
+            BiasedBitSet printed =
+                new BiasedBitSet(BuiltInTypes.MIN_TYPE, grammar);
+            for (IntLLString string : conflictK) {
+                if (string.length() > 0) {
+                    FirstKTrace trace = null;
+                    int type = string.get(0);
+                    if (multiplex instanceof NonterminalRule) {
+                        trace = new FirstKTrace((NonterminalRule) multiplex,
+                                                type, 0);
+                    }
+                    else if (multiplex instanceof Block) {
+                        trace = new FirstKTrace((Block) multiplex,
+                                                type, 0);
+                    }
+                    if (!printed.get(type)) {
+                        System.out.println(
+                            "// FirstK/FirstK on "
+                                    + grammar.getTypeName(type));
+                        System.out.println(trace.toDotString());
+                        printed.set(type);
+                    }
+                }
+            }
+        }
+        if (conflictKFF != null && multiplex.isNullable()) {
+            BiasedBitSet printed =
+                new BiasedBitSet(BuiltInTypes.MIN_TYPE, grammar);
+            for (IntLLString string : conflictKFF) {
+                if (string.length() > 0) {
+                    FirstKTrace trace = null;
+                    int type = string.get(0);
+                    if (multiplex instanceof NonterminalRule) {
+                        trace = new FirstKTrace((NonterminalRule) multiplex,
+                                                type, 0);
+                    }
+                    else if (multiplex instanceof Block) {
+                        trace = new FirstKTrace((Block) multiplex,
+                                                type, 0);
+                    }
+                    if (!printed.get(type)) {
+                        System.out.println(
+                            "// FirstK/FollowK on "
+                                    + grammar.getTypeName(type));
+                        System.out.println(trace.toDotString());
+                    }
+                }
+            }
+        }
+        if (conflictKL != null) {
+            for (BiasedBitSet set : conflictKL) {
+                BiasedBitSet printed =
+                    new BiasedBitSet(BuiltInTypes.MIN_TYPE, grammar);
+                int current = set.getStart();
+                FirstKLTrace trace = null;
+                while ((current = set.nextSetBit(current)) != set.getNone()) {
+                    if (multiplex instanceof NonterminalRule) {
+                        trace = new FirstKLTrace((NonterminalRule) multiplex,
+                                                 current, 0);
+                    }
+                    else if (multiplex instanceof Block) {
+                        trace = new FirstKLTrace((Block) multiplex,
+                                                 current, 0);
+                    }
+                    if (!printed.get(current)) {
+                        System.out.println(
+                            "// FirstKL/FirstKL on "
+                                    + grammar.getTypeName(current));
+                        System.out.println(trace.toDotString());
+                        printed.set(current);
+                    }
+                }
+            }
+        }
+        if (conflictKLFF != null && multiplex.isNullable()) {
+            for (BiasedBitSet set : conflictKLFF) {
+                BiasedBitSet printed =
+                    new BiasedBitSet(BuiltInTypes.MIN_TYPE, grammar);
+                int current = set.getStart();
+                FirstKLTrace trace = null;
+                while ((current = set.nextSetBit(current)) != set.getNone()) {
+                    if (multiplex instanceof NonterminalRule) {
+                        trace = new FirstKLTrace((NonterminalRule) multiplex,
+                                                 current, 0);
+                    }
+                    else if (multiplex instanceof Block) {
+                        trace = new FirstKLTrace((Block) multiplex,
+                                                 current, 0);
+                    }
+                    if (!printed.get(current)) {
+                        System.out.println(
+                            "// FirstKL/FollowKL on "
+                                    + grammar.getTypeName(current));
+                        System.out.println(trace.toDotString());
+                        printed.set(current);
+                    }
+                }
+            }
+        }
+    }
+
     private static void printFlag(ErrorType errorType, int width,
-                                  Antlr4AstParser parser)
+                                  Antlr4ToAstParser parser)
     {
         boolean value = parser.getErrors().get(errorType) ||
                 parser.getWarnings().get(errorType);

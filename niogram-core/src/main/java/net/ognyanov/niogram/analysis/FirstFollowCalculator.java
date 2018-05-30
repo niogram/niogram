@@ -30,8 +30,9 @@ public class FirstFollowCalculator
     implements AttributeCalculator
 {
     /**
-     * Calculate the First and Follow sets of a grammar
-     * and the related conflicts data.
+     * Calculates the First and Follow sets of a grammar
+     * and the related conflicts data. If basic flags
+     * data is not available, invokes first {@link FlagsCalculator}.
      * 
      * @param grammar the grammar to be processed
      */
@@ -49,6 +50,9 @@ public class FirstFollowCalculator
             return;
         }
 
+        if (!grammar.hasFF()) {
+            new FlagsCalculator().calculate(grammar);
+        }
         grammar.clearFF();
         grammar.setFF(true);
         PrepareFFVisitor prepareVisitor = new PrepareFFVisitor();

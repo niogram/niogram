@@ -17,7 +17,6 @@ import net.ognyanov.niogram.ast.Nonterminal;
 import net.ognyanov.niogram.ast.NonterminalRule;
 import net.ognyanov.niogram.ast.Term;
 import net.ognyanov.niogram.ast.Terminal;
-import net.ognyanov.niogram.util.BaseStringBuilder;
 import net.ognyanov.niogram.util.DotStringBuilder;
 
 /**
@@ -26,8 +25,8 @@ import net.ognyanov.niogram.util.DotStringBuilder;
  * @author Nikolay Ognyanov
  */
 public class FirstKLTrace
+    extends BaseTrace
 {
-    private GrammarNode        node;
     private int                terminalType;
     private int                position;
     private FirstKLTrace       parent   = null;
@@ -110,16 +109,6 @@ public class FirstKLTrace
         return children;
     }
 
-    public String toDotString()
-    {
-        DotStringBuilder stringBuilder = new DotStringBuilder();
-        stringBuilder.append("digraph ").append(node.getDisplayName())
-            .append("{\n");
-        toDotString(stringBuilder);
-        stringBuilder.append("}\n");
-        return stringBuilder.toString();
-    }
-
     private void buildChildren()
     {
         if (node instanceof Grammar) {
@@ -137,18 +126,19 @@ public class FirstKLTrace
             for (Alternative alternative : ((NonterminalRule) node)
                 .getAlternatives()) {
                 if (alternative.getFirstKL().get(position).get(terminalType)) {
+
                     FirstKLTrace child =
                         new FirstKLTrace(alternative, terminalType, position);
                     child.parent = this;
                     children.add(child);
                 }
             }
-
         }
         else if (node instanceof Block) {
             for (Alternative alternative : ((Block) node)
                 .getAlternatives()) {
                 if (alternative.getFirstKL().get(position).get(terminalType)) {
+
                     FirstKLTrace child =
                         new FirstKLTrace(alternative, terminalType, position);
                     child.parent = this;
@@ -178,6 +168,7 @@ public class FirstKLTrace
                     }
                     else if (term instanceof Nonterminal) {
                         if (term.getFirstKL().get(position).get(terminalType)) {
+
                             FirstKLTrace child =
                                 new FirstKLTrace(term, terminalType, position,
                                                  false);
@@ -225,60 +216,13 @@ public class FirstKLTrace
         }
     }
 
-    private void toDotString(DotStringBuilder stringBuilder)
+    @Override
+    protected void toDotString(DotStringBuilder stringBuilder)
     {
         define(stringBuilder, node);
         for (FirstKLTrace child : children) {
             child.toDotString(stringBuilder);
             connect(stringBuilder, node, child.node);
         }
-    }
-
-    private void define(BaseStringBuilder stringBuilder,
-                        GrammarNode... nodes)
-    {
-        for (GrammarNode node : nodes) {
-            String shape = null;
-            String style = null;
-            if (node.isNullable() && !(node instanceof NonterminalRule)) {
-                style = "dashed";
-            }
-            if (node instanceof Nonterminal || node instanceof Terminal) {
-                shape = "box";
-            }
-            if (node instanceof Terminal) {
-                if (style != null) {
-                    style = style + ",rounded";
-                }
-                else {
-                    style = "rounded";
-                }
-            }
-            stringBuilder.append(node.getId()).append(" [label=\"");
-            stringBuilder.append(node.getDisplayName()).append("\"");
-            if (shape != null) {
-                stringBuilder.append(" shape=").append(shape);
-            }
-            if (style != null) {
-                stringBuilder.append(" style=\"").append(style).append("\"");
-            }
-            stringBuilder.append("];\n");
-        }
-    }
-
-    private void connect(BaseStringBuilder stringBuilder,
-                         GrammarNode... nodes)
-    {
-        boolean first = true;
-        for (GrammarNode node : nodes) {
-            if (first) {
-                first = false;
-            }
-            else {
-                stringBuilder.append("->");
-            }
-            stringBuilder.append(node.getId());
-        }
-        stringBuilder.append(";\n");
     }
 }

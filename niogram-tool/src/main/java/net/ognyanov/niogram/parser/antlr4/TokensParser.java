@@ -40,14 +40,14 @@ class TokensParser
     private Map<ErrorListener, RelayErrorListener> relayErrorListeners =
         new HashMap<ErrorListener, RelayErrorListener>();
 
-    private Antlr4AstParser                          grammarParser;
+    private Antlr4ToAstParser                          grammarParser;
     private ANTLRv4TokensParser                    tokenParser         = null;
     private ANTLRv4TokensLexer                     tokenLexer          = null;
 
     private BidirectionalMap<String, Integer>      nameToType          =
         new BidirectionalMap<String, Integer>();
 
-    public TokensParser(String fileName, Antlr4AstParser grammarParser)
+    public TokensParser(String fileName, Antlr4ToAstParser grammarParser)
         throws IOException
     {
         this.fileName = fileName;

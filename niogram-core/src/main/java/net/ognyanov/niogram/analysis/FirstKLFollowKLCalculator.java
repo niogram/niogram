@@ -30,6 +30,13 @@ public class FirstKLFollowKLCalculator
     extends BaseInterruptable
     implements AttributeCalculator
 {
+    /**
+     * Calculates the FirstKL and FollowKL sets of a grammar
+     * and the related conflicts data. If basic flags
+     * data is not available, invokes first {@link FlagsCalculator}.
+     * 
+     * @param grammar the grammar to be processed
+     */
     @Override
     public void calculate(Grammar grammar)
     {
@@ -41,6 +48,9 @@ public class FirstKLFollowKLCalculator
             return;
         }
 
+        if (!grammar.hasFF()) {
+            new FlagsCalculator().calculate(grammar);
+        }
         grammar.clearFFKL();
         grammar.setFFKL(true);
         PrepareFFKVisitor prepareVisitor = new PrepareFFKVisitor();
