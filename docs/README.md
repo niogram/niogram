@@ -138,7 +138,8 @@ even more time for testing and debugging is saved.
 The non-**LL(k)** rules (if any)  have to be resolved by
 one or more of the following:
 
-1. Context dependency
+1. Left factoring
+2. Context dependency
 2. Temporary switch to a different parsing stragegy
 3. Temporary switch to a different grammar
 4. Backtracking
