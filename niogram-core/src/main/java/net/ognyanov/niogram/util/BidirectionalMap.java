@@ -18,7 +18,7 @@ import java.util.Set;
  *
  * @author Nikolay Ognyanov
  */
-public class BidirectionalMap<F, S>
+public final class BidirectionalMap<F, S>
     implements Serializable
 {
     private static final long serialVersionUID = 1L;

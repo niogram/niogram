@@ -12,7 +12,7 @@ import java.util.Deque;
 import net.ognyanov.niogram.ast.Grammar;
 import net.ognyanov.niogram.util.IntLLStringSet;
 
-class LLStringSetCache
+class IntLLStringSetCache
 {
     private static final int   MAX_BAG_SIZE = 100;
     private Deque<IntLLStringSet> bag          =
@@ -23,7 +23,7 @@ class LLStringSetCache
     private int                retrieved    = 0;
     private int                maxSize      = 0;
 
-    public LLStringSetCache(Grammar grammar)
+    public IntLLStringSetCache(Grammar grammar)
     {
         this.grammar = grammar;
         this.k = grammar.getK();

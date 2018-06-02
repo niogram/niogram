@@ -7,12 +7,6 @@ package net.ognyanov.niogram.analysis;
  */
 
 import net.ognyanov.niogram.ast.Grammar;
-import net.ognyanov.niogram.ast.GrammarNode;
-import net.ognyanov.niogram.ast.GrammarVisitor;
-import net.ognyanov.niogram.ast.Nonterminal;
-import net.ognyanov.niogram.ast.Rule;
-import net.ognyanov.niogram.ast.Terminal;
-import net.ognyanov.niogram.ast.TerminalRule;
 import net.ognyanov.niogram.util.BaseInterruptable;
 
 /**
@@ -22,7 +16,7 @@ import net.ognyanov.niogram.util.BaseInterruptable;
  * the nonterminal rules.
  * @author Nikolay Ognyanov
  */
-public class FlagsCalculator
+public final class FlagsCalculator
     extends BaseInterruptable
     implements AttributeCalculator
 {
@@ -44,31 +38,11 @@ public class FlagsCalculator
             grammar.setFlags(true);
             return;
         }
-        PrepareFlagsVisitor prepareVisitor = new PrepareFlagsVisitor();
-        prepareVisitor.visitGrammar(grammar);
+        grammar.clearFlags();
+        grammar.setFlags(true);
         new NullableMarker().visitGrammar(grammar);
         new ProductiveMarker().visitGrammar(grammar);
         new ReachableMarker().visitGrammar(grammar);
         new UsedMarker().visitGrammar(grammar);
-        grammar.setFlags(true);
-    }
-
-    private static class PrepareFlagsVisitor
-        extends GrammarVisitor
-    {
-        @Override
-        public void preVisit(GrammarNode node)
-        {
-            if (!((node instanceof Terminal) ||
-                    (node instanceof Nonterminal) ||
-                    (node instanceof TerminalRule))) {
-                node.setNullable(false);
-                node.setProductive(false);
-                node.setReachable(false);
-            }
-            if (node instanceof Rule) {
-                ((Rule) node).setUsed(false);
-            }
-        }
     }
 }

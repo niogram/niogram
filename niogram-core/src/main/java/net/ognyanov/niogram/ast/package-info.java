@@ -48,5 +48,38 @@
 * directed graph. Rules contain references to all their 
 * instances on the right hand side of productions and instances
 * contain references to their correspondent rule.
+* <p>For the sake of convenience alternatives and blocks in AST instances
+* are assigned display names by the following scheme:
+* <ul>
+* <li>alternative number n of a rule or block is assigned a display name
+* <br><code>&lt;rule or block name&gt;/an</code> </li>
+* <li>block number n in an enclosing alternative is assigned a display name
+* <br><code>&lt;alternative name&gt;.bn</code> </li>
+* </ul>
+* When grammar nodes are printed out in dot format, the names of
+* alternatives are reduced to just the last "an" in order to improve
+* readability. In other types of graph printouts where alternatives
+* are present their names are presented in full.
+* <p>Implementation Note:<br>
+* NioGram does not invest much code and performance into making
+* the AST model fool-proof. Client code is technically capable of
+* corrupting the structure and the data content of the AST. Analysis
+* though is only guaranteed to work correctly (or work at all) if the
+* following rules are observed:
+* <ol>
+* <li>Client code never changes the structure of the AST.</li>
+* <li>Client code invokes directly only the following data mutation methods:
+* <ol>
+* <li><code>GrammarNode.setSourceContext()</code></li>
+* <li><code>GrammarNode.setPayload()</code></li>
+* <li><code>Grammar.setK()</code></li>
+* <li><code>Grammar.setKL()</code></li>
+* <li><code>Grammar.clearFlags()</code></li>
+* <li><code>Grammar.clearFF()</code></li>
+* <li><code>Grammar.clearFFK()</code></li>
+* <li><code>Grammar.clearFFKL()</code></li>
+* </ol>
+* </li>
+* </ol>
 */
 package net.ognyanov.niogram.ast;

@@ -25,7 +25,7 @@ import net.ognyanov.niogram.util.NioGramException;
  *
  * @author Nikolay Ognyanov
  */
-public class FirstKFollowKCalculator
+public final class FirstKFollowKCalculator
     extends BaseInterruptable
     implements AttributeCalculator
 {

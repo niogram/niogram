@@ -15,7 +15,7 @@ package net.ognyanov.niogram.util;
  *
  * @author Nikolay Ognyanov
  */
-public class DotStringBuilder
+public final class DotStringBuilder
     extends BaseStringBuilder
 {
     @Override

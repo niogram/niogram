@@ -37,14 +37,14 @@ import net.ognyanov.niogram.util.DotStringBuilder;
  *
  * @author Nikolay Ognyanov
  */
-public class GraphAnalysis
+public final class GraphAnalysis
 {
     private GraphAnalysis()
     {
     }
 
     /**
-     * Build a dependency graph for a grammar
+     * Builds a dependency graph for a grammar.
      * 
      * @param grammar the grammar to be processed
      * @return the dependency graph
@@ -59,16 +59,14 @@ public class GraphAnalysis
     }
 
     /**
-     * Build a reduced dependency graph for a grammar.
+     * Builds a reduced dependency graph for a grammar.
      * This graph is suitable for discovery of left
-     * recursive cycles. These could in principle be
-     * found in the general dependency graph too but
-     * the task is much more computationally expensive.
-     * 
+     * recursive cycles.
+     *  
      * @param grammar the grammar to be processed
      * @return the dependency graph
      */
-    public static Graph<NonterminalRule, DefaultEdge> toLRGraph(Grammar grammar)
+    public static Graph<NonterminalRule, DefaultEdge> toReducedGraph(Grammar grammar)
     {
         LRGraphBuilder graphBuilder = new LRGraphBuilder();
         graphBuilder.visitGrammar(grammar);
@@ -78,23 +76,15 @@ public class GraphAnalysis
     }
 
     /**
-     * Generate a dot format representation of the graph.
-     * 
-     * @param graph the graph to be processed
-     * @return dot format representation of the graph
-     */
-    public static String toDotString(Graph<NonterminalRule, DefaultEdge> graph)
-    {
-        DotEmitter dotEmitter = new DotEmitter();
-        return dotEmitter.toDot(graph);
-    }
-
-    /**
      * Find all simple cycles in a dependency graph.
+     * For typical programming language grammars can be
+     * very expensive.
      * 
      * <p>Note that for typical grammar dependency graphs
-     * (but not reduced dependency graphs) this call can
-     * be very computationally expensive.
+     * (but not for reduced dependency graphs!) this call
+     * can be very computationally expensive. It is also
+     * not interruptable because the underlying graph
+     * library does not support interruption.
      * 
      * @param dependencyGraph the dependency graph
      * 
@@ -123,6 +113,18 @@ public class GraphAnalysis
         List<Set<NonterminalRule>> sccs = GabowStrongConnectivityInspector
             .stronglyConnectedSets();
         return sccs;
+    }
+
+    /**
+     * Generate a dot format representation of the graph.
+     * 
+     * @param graph the graph to be processed
+     * @return dot format representation of the graph
+     */
+    public static String toDotString(Graph<NonterminalRule, DefaultEdge> graph)
+    {
+        DotEmitter dotEmitter = new DotEmitter();
+        return dotEmitter.toDot(graph);
     }
 
     private static void sortCycles(List<List<NonterminalRule>> cycles)

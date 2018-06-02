@@ -13,27 +13,28 @@ import net.ognyanov.niogram.util.BidirectionalMap;
 import net.ognyanov.niogram.util.TypeNameProvider;
 
 /**
- * The AST node for grammars. The root of the AST. Has a list of
- * nonterminal rules and a list of terminal rules.<p>
- * Besides the rule lists has the following own attributes :
+ * The AST node for grammars. The root of the AST.
+ * <p>Has the following own (non-inherited) attributes :
  * <ul>
+ * <li><strong>nonterminalRules</strong>
+ * - A list of of all nonterminal rules in the grammar.</li>
+ * <li><strong>terminalRules</strong>
+ * - A list of of all terminal rules in the grammar.</li>
  * <li><strong>blocks</strong>
- * - A list of of blocks in the grammar.</li>
+ * - A list of all blocks in the grammar.</li>
  * <li><strong>nonProductive</strong>
  * - A list of non-productive nonterminal rules.</li>
  * <li><strong>unreachable</strong>
  * - A list of nonterminal rules which are not reachable from the start rule.</li>
- * <li><strong>markers</strong>
+ * <li><strong>flags</strong>
  * - A flag marking whether productivity, reachability  and nullability of rules
- *  has been calculated.</li>
+ *  have been calculated.</li>
  * <li><strong>FF</strong>
  * - A flag marking whether First/Follow sets have been calculated.</li>
  * <li><strong>FFK</strong>
  * - A flag marking whether FirstK/FollowK sets have been calculated.</li>
  * <li><strong>FFKL</strong>
  * - A flag marking whether FirstKL/FollowKL sets have been calculated.</li>
- * <li><strong>conflictInfo</strong>
- * - A flag marking whether conflict information has been calculated.</li>
  * <li><strong>K</strong>
  * - The value of K for FirstK/FollowK sets.</li>
  * <li><strong>KL</strong>
@@ -65,7 +66,6 @@ public final class Grammar
     private boolean                           fF               = false;
     private boolean                           fFK              = false;
     private boolean                           fFKL             = false;
-    private boolean                           conflictInfo;
     private int                               k                = 1;
     private int                               kL               = 1;
 
@@ -163,16 +163,6 @@ public final class Grammar
         fFKL = value;
     }
 
-    public boolean hasConflictInfo()
-    {
-        return conflictInfo;
-    }
-
-    public void setConclictInfo(boolean conflictInfo)
-    {
-        this.conflictInfo = conflictInfo;
-    }
-
     public int getK()
     {
         return k;
@@ -181,6 +171,15 @@ public final class Grammar
     public int getKL()
     {
         return kL;
+    }
+
+    /**
+     * Clear the grammar of analysis flags analysis data.
+     */
+    public void clearFlags()
+    {
+        new ClearFlagsVisitor().visitGrammar(this);
+        setFlags(false);
     }
 
     /**
@@ -226,6 +225,56 @@ public final class Grammar
         return typeToName.getSecond(index);
     }
 
+    /**
+     * Generates a DOT language representation
+     * of the railroad diagrams of the grammar
+     * rules.
+     * <p>Note that a DOT language printout of
+     * the grammar AST is inherited from  {@link GrammarNode}
+     * (and so is an XML printout).
+     * 
+     * @return dot language description of the
+     * railroad diagrams
+     */
+    public String toRailRoadDot()
+    {
+        RailroadDrawer drawer = new RailroadDrawer();
+        return drawer.draw(this);
+    }
+
+    private static class ClearFlagsVisitor
+        extends GrammarVisitor
+    {
+        @Override
+        public void visitGrammar(Grammar grammar)
+        {
+            grammar.getNonProductive().clear();
+            grammar.getUnreachable().clear();
+            grammar.getUnused().clear();
+            super.visitGrammar(grammar);
+        }
+
+        @Override
+        public void preVisit(GrammarNode node)
+        {
+            if (!((node instanceof Terminal) ||
+                    (node instanceof Nonterminal) ||
+                    (node instanceof TerminalRule))) {
+                node.setNullable(false);
+                node.setProductive(false);
+                node.setReachable(false);
+            }
+            if (node instanceof Rule) {
+                ((Rule) node).setUsed(false);
+            }
+            if (node instanceof Term) {
+                Term term = (Term) node;
+                term.setPrefixNullable(false);
+                term.setSuffixNullable(false);
+            }
+        }
+    }
+
     private static class ClearFFVisitor
         extends GrammarVisitor
     {
@@ -250,23 +299,6 @@ public final class Grammar
                 block.setFfConflict(null);
             }
         }
-    }
-
-    /**
-     * Generates a DOT language representation
-     * of the railroad diagrams of the grammar
-     * rules.
-     * <p>Note that a DOT language printout of
-     * the grammar AST is inherited from  {@link GrammarNode}
-     * (and so is an XML printout).
-     * 
-     * @return dot language description of the
-     * railroad diagrams
-     */
-    public String toRailRoadDot()
-    {
-        RailroadDrawer drawer = new RailroadDrawer();
-        return drawer.draw(this);
     }
 
     private static class ClearFFKVisitor

@@ -42,11 +42,11 @@ class BitSetCache
         return result;
     }
 
-    public void put(BiasedBitSet llString)
+    public void put(BiasedBitSet bitSet)
     {
-        llString.clear();
+        bitSet.clear();
         if (bag.size() < MAX_BAG_SIZE) {
-            bag.push(llString);
+            bag.push(bitSet);
             int size = bag.size();
             if (size > maxSize) {
                 maxSize = size;

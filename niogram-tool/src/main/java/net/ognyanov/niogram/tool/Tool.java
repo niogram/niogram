@@ -17,11 +17,11 @@ import org.jgrapht.graph.DefaultEdge;
 import net.ognyanov.niogram.analysis.FirstFollowCalculator;
 import net.ognyanov.niogram.analysis.FirstKFollowKCalculator;
 import net.ognyanov.niogram.analysis.FirstKLFollowKLCalculator;
-import net.ognyanov.niogram.analysis.FirstKLTrace;
-import net.ognyanov.niogram.analysis.FirstKTrace;
-import net.ognyanov.niogram.analysis.FirstTrace;
 import net.ognyanov.niogram.analysis.FlagsCalculator;
 import net.ognyanov.niogram.analysis.GraphAnalysis;
+import net.ognyanov.niogram.analysis.TerminalTrace;
+import net.ognyanov.niogram.analysis.TerminalTraceFactory;
+import net.ognyanov.niogram.ast.Alternative;
 import net.ognyanov.niogram.ast.Block;
 import net.ognyanov.niogram.ast.BuiltInTypes;
 import net.ognyanov.niogram.ast.Grammar;
@@ -145,7 +145,7 @@ public class Tool
         new FlagsCalculator().calculate(grammar);
         end = System.currentTimeMillis();
         if (printBasic) {
-            System.out.println("Flags calculation duration      : "
+            System.out.println("Flags computation duration      : "
                     + (end - start)
                     + "ms.");
         }
@@ -177,7 +177,7 @@ public class Tool
         }
         if (printLrDgDOT) {
             System.out.println(GraphAnalysis
-                .toDotString(GraphAnalysis.toLRGraph(grammar)));
+                .toDotString(GraphAnalysis.toReducedGraph(grammar)));
         }
         if (doFF) {
             start = System.currentTimeMillis();
@@ -416,7 +416,7 @@ public class Tool
     {
         start = System.currentTimeMillis();
         Graph<NonterminalRule, DefaultEdge> lrDependencyGraph =
-            GraphAnalysis.toLRGraph(grammar);
+            GraphAnalysis.toReducedGraph(grammar);
         @SuppressWarnings("unused")
         List<List<NonterminalRule>> lrCycles =
             GraphAnalysis.findCycles(lrDependencyGraph);
@@ -550,6 +550,10 @@ public class Tool
         GrammarNode node = (GrammarNode) mtx;
         System.out.println(node.getDisplayName() + " :\n   "
                 + node.getFirst());
+        for (Alternative alternative : mtx.getAlternatives()) {
+            System.out.println("   " + alternative.getDisplayName()
+                    + " : " + alternative.getFirst());
+        }
     }
 
     private static void printMultiplexFollow(Grammar grammar, Multiplex mtx)
@@ -564,6 +568,10 @@ public class Tool
         GrammarNode node = (GrammarNode) mtx;
         System.out.println(node.getDisplayName() + " :\n   "
                 + node.getFirstK());
+        for (Alternative alternative : mtx.getAlternatives()) {
+            System.out.println("   " + alternative.getDisplayName()
+                    + " : " + alternative.getFirstK());
+        }
     }
 
     private static void printMultiplexFollowK(Grammar grammar, Multiplex mtx)
@@ -578,6 +586,10 @@ public class Tool
         GrammarNode node = (GrammarNode) mtx;
         System.out.println(node.getDisplayName() + " :\n   "
                 + node.getFirstKL());
+        for (Alternative alternative : mtx.getAlternatives()) {
+            System.out.println("   " + alternative.getDisplayName()
+                    + " : " + alternative.getFirstKL());
+        }
     }
 
     private static void printMultiplexFollowKL(Grammar grammar, Multiplex mtx)
@@ -611,12 +623,14 @@ public class Tool
         boolean hasConflictsK = !mux.getConflictsK().isEmpty();
         boolean hasConflictsKL = !mux.getConflictsKL().isEmpty();
         boolean hasFfConflict =
-            !(mux.getFfConflict() == null) && !mux.getFfConflict().isEmpty();
+            !(mux.getFfConflictSet() == null)
+                    && !mux.getFfConflictSet().isEmpty();
         boolean hasFfConflictK =
-            !(mux.getFfConflictK() == null) && !mux.getFfConflictK().isEmpty();
+            !(mux.getFfConflictSetK() == null)
+                    && !mux.getFfConflictSetK().isEmpty();
         boolean hasFfConflictKL =
-            !(mux.getFfConflictKL() == null)
-                    && !mux.getFfConflictKL().isEmpty();
+            !(mux.getFfConflictSetKL() == null)
+                    && !mux.getFfConflictSetKL().isEmpty();
 
         boolean hasAny = hasConflicts || hasConflictsK || hasConflictsKL ||
                 hasFfConflict || hasFfConflictK || hasFfConflictKL;
@@ -649,17 +663,18 @@ public class Tool
         if (hasFfConflict && isNullable) {
             System.out.print("   ");
             System.out
-                .println("FfConflict   [conflict=" + mux.getFfConflict() + "]");
+                .println(
+                    "FfConflict   [conflict=" + mux.getFfConflictSet() + "]");
         }
         if (hasFfConflictK && isNullable) {
             System.out.print("   ");
             System.out.println(
-                "FfConflictK  [conflict=" + mux.getFfConflictK() + "]");
+                "FfConflictK  [conflict=" + mux.getFfConflictSetK() + "]");
         }
         if (hasFfConflictKL && isNullable) {
             System.out.print("   ");
             System.out.println(
-                "FfConflictKL [conflict=" + mux.getFfConflictKL() + "]");
+                "FfConflictKL [conflict=" + mux.getFfConflictSetKL() + "]");
         }
     }
 
@@ -691,56 +706,53 @@ public class Tool
             for (Conflict c : multiplex.getConflicts()) {
                 conflict.or(c.getConflictSet());
             }
-            conflictFF = multiplex.getFfConflict();
+            conflictFF = multiplex.getFfConflictSet();
         }
         if (grammar.hasFFK()) {
             conflictK = new IntLLStringSet(grammar.getK(), grammar);
             for (ConflictK cK : multiplex.getConflictsK()) {
                 conflictK.addAll(cK.getConflictSet());
             }
-            conflictKFF = multiplex.getFfConflictK();
+            conflictKFF = multiplex.getFfConflictSetK();
         }
         if (grammar.hasFFKL()) {
             conflictKL = new BitSetLLString(grammar.getKL(), grammar);
             for (ConflictKL cKL : multiplex.getConflictsKL()) {
                 conflictKL.addAll(cKL.getConflictSet());
             }
-            conflictKLFF = multiplex.getFfConflictKL();
+            conflictKLFF = multiplex.getFfConflictSetKL();
         }
         if (conflict != null) {
             int current = conflict.getStart();
             while ((current = conflict.nextSetBit(current)) != conflict
                 .getNone()) {
-                FirstTrace trace = null;
-                if (multiplex instanceof NonterminalRule) {
-                    trace =
-                        new FirstTrace((NonterminalRule) multiplex, current);
-                }
-                else if (multiplex instanceof Block) {
-                    trace =
-                        new FirstTrace((Block) multiplex, current);
-                }
+                TerminalTrace trace = TerminalTraceFactory
+                    .buildFirstTrace((GrammarNode) multiplex, current);
                 System.out.println(
                     "// First/First on " + grammar.getTypeName(current));
                 System.out.println(trace.toDotString());
+                ++current;
+                break; //  too much data
             }
         }
         if (conflictFF != null && multiplex.isNullable()) {
             int current = conflictFF.getStart();
             while ((current = conflictFF.nextSetBit(current)) != conflictFF
                 .getNone()) {
-                FirstTrace trace = null;
-                if (multiplex instanceof NonterminalRule) {
-                    trace =
-                        new FirstTrace((NonterminalRule) multiplex, current);
-                }
-                else if (multiplex instanceof Block) {
-                    trace =
-                        new FirstTrace((Block) multiplex, current);
-                }
+                TerminalTrace firstTrace = TerminalTraceFactory
+                    .buildFirstTrace((GrammarNode) multiplex, current);
                 System.out.println(
-                    "// First/Follow on " + grammar.getTypeName(current));
-                System.out.println(trace.toDotString());
+                    "// First/Follow on " + grammar.getTypeName(current)
+                            + " - FIRST");
+                System.out.println(firstTrace.toDotString());
+                TerminalTrace followTrace = TerminalTraceFactory
+                    .buildFollowTrace((GrammarNode) multiplex, current);
+                System.out.println(
+                    "// First/Follow on " + grammar.getTypeName(current)
+                            + " - FOLLOW");
+                System.out.println(followTrace.toDotString());
+                ++current;
+                break; //  too much data
             }
         }
         if (conflictK != null) {
@@ -748,98 +760,85 @@ public class Tool
                 new BiasedBitSet(BuiltInTypes.MIN_TYPE, grammar);
             for (IntLLString string : conflictK) {
                 if (string.length() > 0) {
-                    FirstKTrace trace = null;
+                    TerminalTrace trace = null;
                     int type = string.get(0);
-                    if (multiplex instanceof NonterminalRule) {
-                        trace = new FirstKTrace((NonterminalRule) multiplex,
-                                                type, 0);
-                    }
-                    else if (multiplex instanceof Block) {
-                        trace = new FirstKTrace((Block) multiplex,
-                                                type, 0);
-                    }
                     if (!printed.get(type)) {
+                        printed.set(type);
+                        trace =
+                            TerminalTraceFactory.buildFirstTraceK(
+                                (GrammarNode) multiplex, type);
                         System.out.println(
                             "// FirstK/FirstK on "
                                     + grammar.getTypeName(type));
                         System.out.println(trace.toDotString());
-                        printed.set(type);
+                        break;
                     }
+                    break; // too much data
                 }
             }
         }
+
         if (conflictKFF != null && multiplex.isNullable()) {
             BiasedBitSet printed =
                 new BiasedBitSet(BuiltInTypes.MIN_TYPE, grammar);
             for (IntLLString string : conflictKFF) {
                 if (string.length() > 0) {
-                    FirstKTrace trace = null;
                     int type = string.get(0);
-                    if (multiplex instanceof NonterminalRule) {
-                        trace = new FirstKTrace((NonterminalRule) multiplex,
-                                                type, 0);
-                    }
-                    else if (multiplex instanceof Block) {
-                        trace = new FirstKTrace((Block) multiplex,
-                                                type, 0);
-                    }
                     if (!printed.get(type)) {
+                        printed.set(type);
+                        TerminalTrace firstTrace = TerminalTraceFactory
+                            .buildFirstTraceK((GrammarNode) multiplex, type);
                         System.out.println(
-                            "// FirstK/FollowK on "
-                                    + grammar.getTypeName(type));
-                        System.out.println(trace.toDotString());
+                            "// FirstK/KFollowK on " + grammar.getTypeName(type)
+                                    + " - FIRST");
+                        System.out.println(firstTrace.toDotString());
+                        TerminalTrace followTrace = TerminalTraceFactory
+                            .buildFollowTraceK((GrammarNode) multiplex, type);
+                        System.out.println(
+                            "// FirstK/FollowK on " + grammar.getTypeName(type)
+                                    + " - FOLLOW");
+                        System.out.println(followTrace.toDotString());
                     }
+                    break; // too much data
                 }
             }
         }
-        if (conflictKL != null) {
-            for (BiasedBitSet set : conflictKL) {
-                BiasedBitSet printed =
-                    new BiasedBitSet(BuiltInTypes.MIN_TYPE, grammar);
-                int current = set.getStart();
-                FirstKLTrace trace = null;
-                while ((current = set.nextSetBit(current)) != set.getNone()) {
-                    if (multiplex instanceof NonterminalRule) {
-                        trace = new FirstKLTrace((NonterminalRule) multiplex,
-                                                 current, 0);
-                    }
-                    else if (multiplex instanceof Block) {
-                        trace = new FirstKLTrace((Block) multiplex,
-                                                 current, 0);
-                    }
-                    if (!printed.get(current)) {
-                        System.out.println(
-                            "// FirstKL/FirstKL on "
-                                    + grammar.getTypeName(current));
-                        System.out.println(trace.toDotString());
-                        printed.set(current);
-                    }
-                }
+
+        if (conflictKL != null && conflictKL.length() > 0) {
+            BiasedBitSet set = conflictKL.get(0);
+            int current = set.getStart();
+            TerminalTrace trace = null;
+            while ((current = set.nextSetBit(current)) != set.getNone()) {
+                trace = TerminalTraceFactory.buildFirstTraceKL(
+                    (GrammarNode) multiplex, current);
+                System.out.println(
+                    "// FirstKL/FirstKL on "
+                            + grammar.getTypeName(current));
+                System.out.println(trace.toDotString());
+                ++current;
+                break; //  too much data
             }
         }
-        if (conflictKLFF != null && multiplex.isNullable()) {
-            for (BiasedBitSet set : conflictKLFF) {
-                BiasedBitSet printed =
-                    new BiasedBitSet(BuiltInTypes.MIN_TYPE, grammar);
-                int current = set.getStart();
-                FirstKLTrace trace = null;
-                while ((current = set.nextSetBit(current)) != set.getNone()) {
-                    if (multiplex instanceof NonterminalRule) {
-                        trace = new FirstKLTrace((NonterminalRule) multiplex,
-                                                 current, 0);
-                    }
-                    else if (multiplex instanceof Block) {
-                        trace = new FirstKLTrace((Block) multiplex,
-                                                 current, 0);
-                    }
-                    if (!printed.get(current)) {
-                        System.out.println(
-                            "// FirstKL/FollowKL on "
-                                    + grammar.getTypeName(current));
-                        System.out.println(trace.toDotString());
-                        printed.set(current);
-                    }
-                }
+
+        if (conflictKLFF != null && conflictKLFF.length() > 0
+                && multiplex.isNullable()) {
+            BiasedBitSet set = conflictKLFF.get(0);
+            int current = set.getStart();
+            while ((current = set.nextSetBit(current)) != set.getNone()) {
+                TerminalTrace firstTrace = TerminalTraceFactory
+                    .buildFirstTraceKL((GrammarNode) multiplex, current);
+                System.out.println(
+                    "// FirstKL/FollowKL on " + grammar.getTypeName(current)
+                            + " - FIRST");
+                System.out.println(firstTrace.toDotString());
+                TerminalTrace followTrace = TerminalTraceFactory
+                    .buildFollowTraceKL((GrammarNode) multiplex, current);
+                System.out.println(
+                    "// FirstKL/FollowKL on " + grammar.getTypeName(current)
+                            + " - FOLLOW");
+                System.out.println(followTrace.toDotString());
+                ++current;
+                break; //  too much data
             }
         }
     }

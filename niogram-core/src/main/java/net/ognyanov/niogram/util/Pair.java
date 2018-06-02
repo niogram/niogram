@@ -15,7 +15,7 @@ import java.io.Serializable;
  * @param <F> Type of the first element in the pair.
  * @param <S> Type of the second element in the pair.
  */
-public class Pair<F, S>
+public final class Pair<F, S>
     implements Serializable
 {
     private static final long serialVersionUID = 1L;

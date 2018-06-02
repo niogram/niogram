@@ -215,11 +215,11 @@ public final class IntLLStringSet
      * Tests whether any string in the set contains a
      * specified value at a specified position.
      * 
-     * @param value the value for which the test is performed
      * @param position the position at which the test is performed
+     * @param value the value for which the test is performed
      * @return true if the test succeeds; false otherwise
      */
-    public boolean containsAt(int value, int position)
+    public boolean containsAt(int position, int value)
     {
         boolean result = false;
         for (IntLLString string : this) {

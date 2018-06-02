@@ -17,7 +17,7 @@ package net.ognyanov.niogram.ast;
  * 
  * @author Nikolay Ognyanov
  */
-public class BuiltInTypes
+public final class BuiltInTypes
 {
     public static final int     INVALID          = 0;                     //Token.INVALID_TYPE;
     public static final int     EOF              = INVALID - 1;           //Token.EOF;

@@ -36,7 +36,7 @@ import net.ognyanov.niogram.util.IntLLStringSet;
 *
  * @author Nikolay Ognyanov
  */
-public class Block
+public final class Block
     extends Term
     implements Multiplex
 {
@@ -111,7 +111,7 @@ public class Block
     }
 
     @Override
-    public BiasedBitSet getFfConflict()
+    public BiasedBitSet getFfConflictSet()
     {
         return ffConflict;
     }
@@ -122,7 +122,7 @@ public class Block
     }
 
     @Override
-    public IntLLStringSet getFfConflictK()
+    public IntLLStringSet getFfConflictSetK()
     {
         return ffConflictK;
     }
@@ -133,7 +133,7 @@ public class Block
     }
 
     @Override
-    public BitSetLLString getFfConflictKL()
+    public BitSetLLString getFfConflictSetKL()
     {
         return ffConflictKL;
     }

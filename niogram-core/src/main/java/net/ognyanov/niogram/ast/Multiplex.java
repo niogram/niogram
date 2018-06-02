@@ -15,6 +15,9 @@ import net.ognyanov.niogram.util.IntLLStringSet;
 
 /**
  * A common interface for NonterminalRule and Block.
+ * <p>Allows for some code reuse but there is no guarantee
+ * that NioGram methods accepting Multiplex will accept
+ * any implementation other than NonterminalRule and Block.
  *
  * @author Nikolay Ognyanov
  */
@@ -28,52 +31,56 @@ public interface Multiplex
     public List<Alternative> getAlternatives();
 
     /**
-     * Retrieves First/First conflicts.
+     * Retrieves the list of First/First conflicts.
      * 
-     * @return the list of alternatives
+     * @return the list of conflicts; possibly empty but never null
      */
     public List<Conflict> getConflicts();
 
     /**
     * Retrieves the list of FirstK/FirstK conflicts.
     * 
-    * @return the list of alternatives
+    * @return the list of conflicts; possibly empty but never null
     */
     public List<ConflictK> getConflictsK();
 
     /**
      * Retrieves the list of FirstKL/FirstKL conflicts.
      * 
-     * @return the list of alternatives
+     * @return the list of conflicts; possibly empty but never null
      */
     public List<ConflictKL> getConflictsKL();
 
     /**
-     * Retrieves the Firsst/Follow conflict.
+     * Retrieves the First/Follow conflict.
      * 
-     * @return the conflict
+     * @return the possibly empty conflict set;
+     * null only if !grammar.hasFF()
      */
-    public BiasedBitSet getFfConflict();
+    public BiasedBitSet getFfConflictSet();
 
     /**
      * Retrieves the FirsstK/FollowK conflict.
      * 
-     * @return the conflict
+     * @return the possibly empty conflict set;
+     * null only if !grammar.hasFFK()
      */
-    public IntLLStringSet getFfConflictK();
+    public IntLLStringSet getFfConflictSetK();
 
     /**
-    * Retrieves the FirsstKL/Follow KLconflict.
+    * Retrieves the FirsstKL/FollowKL conflict.
     * 
-    * @return the conflict
+    * @return the possibly empty conflict set;
+    * null only if !grammar.hasFFKL()
     */
-    public BitSetLLString getFfConflictKL();
+    public BitSetLLString getFfConflictSetKL();
 
     /**
      * Retrieves the minimum amount of lookahead
      * needed to resolve the FirstK/FirstK conflicts.
      * 
      * @return the minimum amount of lookahead
+     * or -1 if the conflict is not resolvable
      */
     public int getMinK();
 
@@ -82,6 +89,7 @@ public interface Multiplex
      * needed to resolve the FirstKL/FirstKL conflicts.
      * 
      * @return the minimum amount of lookahead
+     * or -1 if the conflict is not resolvable
      */
     public int getMinKL();
 
@@ -98,6 +106,7 @@ public interface Multiplex
      * needed to resolve the FirstKL/FollowKL conflicts.
      * 
      * @return the minimum amount of lookahead
+     * or -1 if the conflict is not resolvable
      */
     public int getMinFfKL();
 

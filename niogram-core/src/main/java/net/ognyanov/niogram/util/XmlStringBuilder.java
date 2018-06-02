@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * @author Nikolay Ognyanov
  */
-public class XmlStringBuilder
+public final class XmlStringBuilder
     extends BaseStringBuilder
 {
     private static final char                EntityLow1  = 0x7f;

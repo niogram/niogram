@@ -43,11 +43,11 @@ class BitSetLLStringCache
         return result;
     }
 
-    public void put(BitSetLLString llString)
+    public void put(BitSetLLString bitSetString)
     {
-        llString.clear();
+        bitSetString.clear();
         if (bag.size() < MAX_BAG_SIZE) {
-            bag.push(llString);
+            bag.push(bitSetString);
             int size = bag.size();
             if (size > maxSize) {
                 maxSize = size;

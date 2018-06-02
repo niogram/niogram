@@ -30,7 +30,7 @@ import java.util.BitSet;
  * 
  * @author Nikolay Ognyanov
  */
-public class BiasedBitSet
+public final class BiasedBitSet
     implements Serializable, Cloneable
 {
     private static final long serialVersionUID  = 1L;

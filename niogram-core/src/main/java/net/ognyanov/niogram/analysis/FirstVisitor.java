@@ -36,7 +36,7 @@ class FirstVisitor
             super.visitGrammar(grammar);
         } while (modified);
         BiasedBitSet grammarFirst = grammar.getFirst();
-        grammarFirst.clear();   
+        grammarFirst.clear();
         for (NonterminalRule rule : grammar.getNonterminalRules()) {
             grammarFirst.or(rule.getFirst());
         }

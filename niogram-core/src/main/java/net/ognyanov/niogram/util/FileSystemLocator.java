@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @author Nikolay Ognyanov
  */
-public class FileSystemLocator
+public final class FileSystemLocator
     implements ResourceLocator
 {
     /**

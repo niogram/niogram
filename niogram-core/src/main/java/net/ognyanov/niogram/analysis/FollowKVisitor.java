@@ -22,7 +22,7 @@ import net.ognyanov.niogram.util.IntLLStringSet;
 class FollowKVisitor
     extends InterruptableGrammarVisitor
 {
-    private LLStringSetCache cache     = null;
+    private IntLLStringSetCache cache     = null;
     private boolean          modified  = false;
     private int              pass      = 0;
     private boolean          debug     = false;
@@ -34,7 +34,7 @@ class FollowKVisitor
         if (debug) {
             System.out.println("Start FollowK");
         }
-        cache = new LLStringSetCache(grammar);
+        cache = new IntLLStringSetCache(grammar);
         pass = 1;
         super.visitGrammar(grammar);
         pass = 2;

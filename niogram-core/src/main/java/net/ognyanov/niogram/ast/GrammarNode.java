@@ -354,7 +354,6 @@ public abstract class GrammarNode
                 String name = node.getDisplayName();
                 int l = name.lastIndexOf('/');
                 label = name.substring(l + 1);
-                ;
                 shape = "circle";
                 color = "black";
                 style = null;

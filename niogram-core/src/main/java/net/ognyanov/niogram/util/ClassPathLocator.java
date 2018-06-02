@@ -24,7 +24,7 @@ import java.util.zip.ZipFile;
  *
  * @author Nikolay Ognyanov
  */
-public class ClassPathLocator
+public final class ClassPathLocator
     implements ResourceLocator
 {
     private static final Object lock         = new Object();

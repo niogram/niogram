@@ -315,7 +315,7 @@ public final class BitSetLLString
      */
     public BiasedBitSet get(int position)
     {
-        if (position < 0 || position > length - 1) {
+        if (position < 0 || position >= length) {
             throw new IndexOutOfBoundsException();
         }
         return string[position];
@@ -338,6 +338,23 @@ public final class BitSetLLString
                 result = true;
                 break;
             }
+        }
+        return result;
+    }
+
+    /**
+     * Tests whether the bitset at the specified position
+     * (if any) contains the specified value.
+     * 
+     * @param position the position at which the test is performed
+     * @param value the value for which the test is performed
+     * @return true if the test succeeds; false otherwise
+     */
+    public boolean containsAt(int position, int value)
+    {
+        boolean result = false;
+        if (position < length) {
+            result = get(position).get(value);
         }
         return result;
     }

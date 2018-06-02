@@ -101,7 +101,7 @@ public final class NonterminalRule
     }
 
     @Override
-    public BiasedBitSet getFfConflict()
+    public BiasedBitSet getFfConflictSet()
     {
         return ffConflict;
     }
@@ -112,7 +112,7 @@ public final class NonterminalRule
     }
 
     @Override
-    public IntLLStringSet getFfConflictK()
+    public IntLLStringSet getFfConflictSetK()
     {
         return ffConflictK;
     }
@@ -123,7 +123,7 @@ public final class NonterminalRule
     }
 
     @Override
-    public BitSetLLString getFfConflictKL()
+    public BitSetLLString getFfConflictSetKL()
     {
         return ffConflictKL;
     }

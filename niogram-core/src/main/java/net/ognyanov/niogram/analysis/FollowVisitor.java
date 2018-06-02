@@ -45,7 +45,7 @@ class FollowVisitor
         pass = 3;
         super.visitGrammar(grammar);
         BiasedBitSet grammarFollow = grammar.getFollow();
-        grammarFollow.clear();   
+        grammarFollow.clear();
         for (NonterminalRule rule : grammar.getNonterminalRules()) {
             grammarFollow.or(rule.getFollow());
         }
@@ -145,7 +145,7 @@ class FollowVisitor
             }
         }
         else if (pass == 3) {
-            BiasedBitSet alternativeFollow = alternative.getFirst();
+            BiasedBitSet alternativeFollow = alternative.getFollow();
             BiasedBitSet parentFollow = alternative.getParent().getFollow();
             alternativeFollow.or(parentFollow);
             for (Term term : terms) {

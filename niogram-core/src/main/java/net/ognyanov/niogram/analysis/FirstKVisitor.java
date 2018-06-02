@@ -20,7 +20,7 @@ class FirstKVisitor
     extends InterruptableGrammarVisitor
 {
     private boolean          modified  = false;
-    private LLStringSetCache cache     = null;
+    private IntLLStringSetCache cache     = null;
     private boolean          debug     = false;
     private boolean          moreDebug = false;
 
@@ -30,7 +30,7 @@ class FirstKVisitor
         if (debug) {
             System.out.println("Start FirstK");
         }
-        cache = new LLStringSetCache(grammar);
+        cache = new IntLLStringSetCache(grammar);
         do {
             modified = false;
             super.visitGrammar(grammar);
