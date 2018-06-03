@@ -143,7 +143,7 @@ one or more of the following:
 2. Temporary switch to a different parsing stragegy
 3. Temporary switch to a different grammar
 4. Backtracking
-5. Ad hoc tricks
+5. Ad hoc solutions
 
 NioGram strives to facilitate these solutions by means of
 grammar analysis. For example - by computing terminal
