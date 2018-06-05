@@ -10,8 +10,8 @@
 
 ---
 
-**NioGram** is a tool for **LL(k)** syntax analysis of 
-context free grammars. Such analysis can be benefitial
+**NioGram** is a tool for **LL(k)** syntax analysis of
+context free grammars. Such analysis can be beneficial
 in the process of language and grammar design and for
 the process of hand-coded parser implementation.
 
