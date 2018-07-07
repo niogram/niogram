@@ -13,8 +13,6 @@ import java.util.Iterator;
 
 import org.junit.Test;
 
-import net.ognyanov.niogram.util.IntLLString;
-
 public class LLStringTest
 {
     private static int k = 5;
@@ -38,9 +36,11 @@ public class LLStringTest
         assertTrue(s1.length() == 0);
         assertTrue(s1.isEmpty());
         assertTrue(s1.limit() == k);
+        s1.add(0);
         assertTrue(s1.length() == 1);
         assertFalse(s1.isEmpty());
         assertTrue(s1.get(0) == 0);
+        s1.add(1);
         assertTrue(s1.limit() == k);
         assertTrue(s1.length() == 2);
         assertFalse(s1.isEmpty());
@@ -55,7 +55,7 @@ public class LLStringTest
         }
         assertTrue(s1.isFull());
 
-        // append(int...), append(LLString)
+        // add(int...), add(LLString)
         s1.clear();
         s2.clear();
         s1.add(0, 1);
@@ -64,9 +64,13 @@ public class LLStringTest
         s2.add(2, 3);
         assertTrue(s2.contains(2));
         assertTrue(s2.contains(3));
+        s1.append(s2);
+        assertTrue(s1.contains(2));
+        assertTrue(s1.contains(3));
+        assertTrue(s1.get(3) == 3);
 
         // toString
-        assertTrue(s1.toString().equals("[0,1,2,3,-1]"));
+        assertTrue(s1.toString().equals("[0,1,2,3]"));
         assertTrue(s2.toString().equals("[2,3]"));
 
         // equals

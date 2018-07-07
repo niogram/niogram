@@ -204,6 +204,34 @@ public final class IntLLString
     }
 
     /**
+     * Tests whether another string is a prefix to this.
+     * 
+     * @param other the other string to be tested
+     * @return true if the other string is a prefix to
+     * this; false otherwise
+     */
+    public boolean startsWith(IntLLString other)
+    {
+        if (other == null) {
+            throw new IllegalArgumentException("null argument");
+        }
+
+        boolean result = true;
+        if (other.length() > length()) {
+            result = false;
+        }
+        else {
+            for (int i = 0; i < other.length(); i++) {
+                if (other.get(i) != this.get(i)) {
+                    result = false;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
      * Tests whether the prefix of length k of
      * another string (or the whole other string
      * if its length is less than k) is a prefix

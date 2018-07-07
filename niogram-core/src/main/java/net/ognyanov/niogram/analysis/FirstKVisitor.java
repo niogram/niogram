@@ -19,10 +19,10 @@ import net.ognyanov.niogram.util.IntLLStringSet;
 class FirstKVisitor
     extends InterruptableGrammarVisitor
 {
-    private boolean          modified  = false;
+    private boolean             modified  = false;
     private IntLLStringSetCache cache     = null;
-    private boolean          debug     = false;
-    private boolean          moreDebug = false;
+    private boolean             debug     = false;
+    private boolean             moreDebug = false;
 
     @Override
     public void visitGrammar(Grammar grammar)
@@ -161,7 +161,7 @@ class FirstKVisitor
     {
         if (debug) {
             IntLLStringSet nodeFirstK = node.getFirstK();
-            boolean error = !nodeFirstK.isLE(newFirstK);
+            boolean error = !newFirstK.containsAll(nodeFirstK);
             String header = "INFO : ";
             if (error) {
                 header = "ERROR: ";

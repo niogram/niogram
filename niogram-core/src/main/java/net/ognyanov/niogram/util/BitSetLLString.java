@@ -185,7 +185,7 @@ public final class BitSetLLString
     }
 
     /**
-     * Tests whether the current lenght of the string is
+     * Tests whether the current length of the string is
      * equal to its limit.
      * 
      * @return true if the length is equal to the limit;
@@ -327,7 +327,7 @@ public final class BitSetLLString
      * @param value the value to be looked for
      * @return true if the vaule is contained in the string; false otherwise
      */
-    public boolean contains(BiasedBitSet value)
+    boolean contains(BiasedBitSet value)
     {
         if (value == null) {
             throw new IllegalArgumentException("null argument");
@@ -359,7 +359,57 @@ public final class BitSetLLString
         return result;
     }
 
-    public boolean startsWith(BitSetLLString other)
+    /**
+     * Tests that the argument string satisfies the following:
+     * <ol>
+     * <li>The string lengths of the argument are a subset of the
+     * string lengths of this object.</li>
+     * <li>The set at each position in the argument is a
+     * subset of the set at the same position in this object.</li>
+     * </ol>
+     * @param other the string to be tested
+     * @return true if the tests pass; false otherwise
+     */
+    public boolean containsAll(BitSetLLString other)
+    {
+        if (other == null) {
+            throw new IllegalArgumentException("null argument");
+        }
+        boolean result = true;
+
+        if (other == this) {
+        }
+        else if (other.length > this.length) {
+            result = false;
+        }
+        else if (!this.stringLengths.containsAll(other.stringLengths)) {
+            result = false;
+        }
+        else if (this.length > 0) {
+            BiasedBitSet bitSet =
+                new BiasedBitSet(this.string[0]);
+            for (int i = 0; i < other.length; i++) {
+                bitSet.clear();
+                bitSet.or(this.string[i]);
+                bitSet.and(other.string[i]);
+                bitSet.xor(other.string[i]);
+                if (!bitSet.isEmpty()) {
+                    result = false;
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Tests whether the argument is a prefix to this string.
+     * 
+     * @param other the other string to be tested
+     * @return true if the test passes; false otherwise
+     */
+    boolean startsWith(BitSetLLString other)
     {
         if (other == null) {
             throw new IllegalArgumentException();
@@ -391,6 +441,65 @@ public final class BitSetLLString
     }
 
     /**
+     * Tests whether an argument string is matched by
+     * this object. A match is defined as the integer at every
+     * position in the argument being contained in the set at
+     * the same position in this object.
+     * 
+     * @param intLLString the string to be tested
+     * @return true if the argument is matched; false otherwise
+     */
+    public boolean matches(IntLLString intLLString)
+    {
+        if (intLLString == null) {
+            throw new IllegalArgumentException("null argument");
+        }
+
+        boolean result = true;
+        if (intLLString.length() > length()) {
+            result = false;
+        }
+        else {
+            for (int i = 0; i < intLLString.length(); i++) {
+                if (!string[i].get(intLLString.get(i))) {
+                    result = false;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Tests whether each value at position i in a
+     * specified sequence is contained by the set
+     * at position i in this object.
+     * 
+     * @param values the values to be tested
+     * @return true if the test passes; false otherwise
+     */
+    public boolean matches(int... values)
+    {
+        if (values == null) {
+            throw new IllegalArgumentException("null argument");
+        }
+
+        boolean result = true;
+        if (values.length > length) {
+            result = false;
+        }
+        else {
+            for (int i = 0; i < values.length; i++) {
+                if (!string[i].get(values[i])) {
+                    result = false;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
      * Tests whether this set is less than or equal in relation to
      * another set. The definition of the partial ordering relation
      * being tested is: X <= Y if and only X is not longer than Y
@@ -400,7 +509,7 @@ public final class BitSetLLString
      * @param other the set against which this one is tested
      * @return true if the ordering relation holds; otherwise false
      */
-    public boolean isLE(BitSetLLString other)
+    boolean isLE(BitSetLLString other)
     {
         if (other == null) {
             throw new IllegalArgumentException();
@@ -522,6 +631,7 @@ public final class BitSetLLString
     /**
      * {@inheritDoc}
      */
+    @Override
     public Iterator<BiasedBitSet> iterator()
     {
         return new TSIterator();

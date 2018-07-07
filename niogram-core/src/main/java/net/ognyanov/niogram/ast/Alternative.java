@@ -25,9 +25,8 @@ public final class Alternative
 {
     private static final long serialVersionUID = 1L;
 
-    private List<Term>        terms            =
-        new ArrayList<Term>();
-    
+    private List<Term>        terms            = new ArrayList<Term>();
+
     public Alternative(int type)
     {
         super(type);
@@ -37,6 +36,5 @@ public final class Alternative
     {
         return terms;
     }
-
 
 }

@@ -277,6 +277,19 @@ public final class BiasedBitSet
         return bitSet.get(bitIndex + bias);
     }
 
+    /**
+     * A synonym for get() which sounds better in parsers and
+     * is in line with the naming of the matching methods in
+     * {@link IntLLStringSet} and {@link BitSetLLString}
+     * 
+     * @param bitIndex the index of the value to be retrieved
+     * @return the value at the index
+     */
+    public boolean matches(int bitIndex)
+    {
+        return bitSet.get(bitIndex + bias);
+    }
+
     public BiasedBitSet get(int fromIndex, int toIndex)
     {
         BitSet newBitSet = bitSet.get(fromIndex + bias, toIndex + bias);
@@ -297,20 +310,17 @@ public final class BiasedBitSet
         return result >= 0 ? result - bias : none;
     }
 
-    /*
-    // Available since Java 1.7
     public int previousSetBit(int fromIndex)
     {
         int result = bitSet.previousSetBit(fromIndex + bias);
         return result >= 0 ? result - bias : none;
     }
-    
+
     public int previousClearBit(int fromIndex)
     {
         int result = bitSet.previousClearBit(fromIndex + bias);
         return result >= 0 ? result - bias : none;
     }
-    */
 
     public int length()
     {
@@ -442,10 +452,9 @@ public final class BiasedBitSet
     }
 
     /*
-    // Available since Java 1.8
     public IntStream stream()
     {
-        return `bitSet.stream();
+        return bitSet.stream();
     }
     */
 

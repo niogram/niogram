@@ -6,8 +6,11 @@
  */
 package net.ognyanov.niogram.tool;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
 
@@ -324,6 +327,7 @@ public class Tool
 
     }
 
+    @SuppressWarnings("unused")
     private static void storeGrammar(Grammar grammar, String fileName)
     {
         String serFileName = null;
@@ -346,22 +350,23 @@ public class Tool
             System.out.println(e);
         }
         /* Test */
-        /*
-        try {
-            FileInputStream fileIn = new FileInputStream(new File(serFileName));
-            ObjectInputStream in = new ObjectInputStream(fileIn);
-            Grammar g = (Grammar) in.readObject();
-            printSets(g);
+        if (false) {
+            try {
+                FileInputStream fileIn =
+                    new FileInputStream(new File(serFileName));
+                ObjectInputStream in = new ObjectInputStream(fileIn);
+                Grammar g = (Grammar) in.readObject();
+                printSets(g);
+            }
+            catch (IOException e) {
+                System.out.println("Failed to read back the grammar.");
+                System.out.println(e);
+            }
+            catch (ClassNotFoundException e) {
+                System.out.println("Failed to read back the grammar.");
+                System.out.println(e);
+            }
         }
-        catch (IOException e) {
-            System.out.println("Failed to read back the grammar.");
-            System.out.println(e);
-        }
-        catch (ClassNotFoundException e) {
-            System.out.println("Failed to read back the grammar.");
-            System.out.println(e);
-        }
-        */
     }
 
     private static void printDiagnostic(Antlr4ToAstParser astParser)

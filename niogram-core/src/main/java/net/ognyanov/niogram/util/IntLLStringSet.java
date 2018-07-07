@@ -232,6 +232,29 @@ public final class IntLLStringSet
     }
 
     /**
+     * Tests whether a specified string is a prefix to
+     * some of the strings in this set.
+     * 
+     * @param intLLString the string to be tested
+     * @return true if the string is a prefix to some
+     * string in this set; false otherwise
+     */
+    public boolean matches(IntLLString intLLString)
+    {
+        if (intLLString == null) {
+            throw new IllegalArgumentException("null argument");
+        }
+        boolean result = false;
+        for (IntLLString s : this) {
+            if (s.startsWith(intLLString)) {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
+
+    /**
      * Adds to the set an empty string.
      */
     public void addEmpty()
@@ -322,7 +345,7 @@ public final class IntLLStringSet
      * @param other the set against which this one is tested
      * @return true if the ordering relation holds; otherwise false
      */
-    public boolean isLE(IntLLStringSet other)
+    boolean isLE(IntLLStringSet other)
     {
         if (other == null) {
             throw new IllegalArgumentException();

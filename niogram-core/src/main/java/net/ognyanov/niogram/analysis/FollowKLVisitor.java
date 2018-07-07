@@ -167,7 +167,7 @@ class FollowKLVisitor
     {
         if (debug) {
             BitSetLLString nodeFollowKL = node.getFollowKL();
-            boolean error = !nodeFollowKL.isLE(newFollowKL);
+            boolean error = !newFollowKL.containsAll(nodeFollowKL);
             String header = "INFO : ";
             if (error) {
                 header = "ERROR: ";

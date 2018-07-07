@@ -23,10 +23,10 @@ class FollowKVisitor
     extends InterruptableGrammarVisitor
 {
     private IntLLStringSetCache cache     = null;
-    private boolean          modified  = false;
-    private int              pass      = 0;
-    private boolean          debug     = false;
-    private boolean          moreDebug = false;
+    private boolean             modified  = false;
+    private int                 pass      = 0;
+    private boolean             debug     = false;
+    private boolean             moreDebug = false;
 
     @Override
     public void visitGrammar(Grammar grammar)
@@ -167,7 +167,7 @@ class FollowKVisitor
     {
         if (debug) {
             IntLLStringSet nodeFollowK = node.getFollowK();
-            boolean error = !nodeFollowK.isLE(newFollowK);
+            boolean error = !newFollowK.containsAll(nodeFollowK);
             String header = "INFO : ";
             if (error) {
                 header = "ERROR: ";

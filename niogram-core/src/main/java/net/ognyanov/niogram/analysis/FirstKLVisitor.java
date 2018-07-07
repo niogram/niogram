@@ -161,7 +161,7 @@ class FirstKLVisitor
     {
         if (debug) {
             BitSetLLString nodeFirstKL = node.getFirstKL();
-            boolean error = !nodeFirstKL.isLE(newFirstKL);
+            boolean error = !newFirstKL.containsAll(nodeFirstKL);
             String header = "INFO : ";
             if (error) {
                 header = "ERROR: ";
