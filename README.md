@@ -150,16 +150,3 @@ grammar analysis. For example - by computing terminal
 occurrence traces.
 
 ---
-
-### Development Roadmap and Status
-1. AST model for the ANTLR 4 grammar language. **Done**
-2. Parsing of ANTLR grammars to AST. **Done**
-3. Grammar analysis **Done**
-4. General code and API cleanup. **In Progress**
-5. Documentation. **Ongoing** 
-6. Initial acceptance testing. **TBD**
-7. First release to public. **TBD**
-
-**General Status : Under Development**
-
----
